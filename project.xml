@@ -6,6 +6,8 @@
 	
 	<source path="Source" />
 	
+	<haxelib name="haxeui" />
+	<haxelib name="msignal" />
 	<haxelib name="openfl" />
 	<include path="hxudp" />
 	
