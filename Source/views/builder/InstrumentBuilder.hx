@@ -49,14 +49,18 @@ class InstrumentBuilder extends VBox {
         addChild(spacer);
 
         instrument = new Instrument();
-        instrument.width = 320;
-        instrument.height = 480;
         instrument.horizontalAlign = "center";
         addChild(instrument);
 
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
         addEventListener(UIEvent.MOUSE_UP, mouseUp);
         instrument.addEventListener(MouseEvent.MOUSE_DOWN, instrumentPressed);
+        updateDimensions(320, 480);
+    }
+
+    public function updateDimensions(width, height) {
+        instrument.width = width;
+        instrument.height = height;
     }
 
     private function instrumentPressed(mouseEvent:MouseEvent) {

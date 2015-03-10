@@ -27,6 +27,8 @@ class App extends HBox {
         instrumentBuilder = new InstrumentBuilder();
         addChild(instrumentBuilder);
 
+        sideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
+
         instrumentBuilder.onControlSelected.add(sideBar.controlSelected);
         instrumentBuilder.onControlDeselected.add(sideBar.controlDeselected);
         instrumentBuilder.onControlUpdated.add(sideBar.controlUpdated);

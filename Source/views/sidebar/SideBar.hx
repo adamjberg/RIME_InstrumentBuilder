@@ -3,11 +3,14 @@ package views.sidebar;
 import haxe.ui.toolkit.containers.TabView;
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Text;
+import msignal.Signal.Signal2;
 import openfl.events.Event;
 import views.instrument.controls.IControl;
 import views.sidebar.tabs.*;
 
 class SideBar extends TabView {
+
+    public var onDimensionsChanged:Signal2<Int, Int>;
 
     private var generalTab:GeneralTab;
     private var controlTab:ControlTab;
@@ -20,6 +23,7 @@ class SideBar extends TabView {
         percentHeight = 100;
 
         generalTab = new GeneralTab();
+        onDimensionsChanged = generalTab.onDimensionsChanged;
         addChild(generalTab);
     }
 
