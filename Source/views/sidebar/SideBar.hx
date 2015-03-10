@@ -21,19 +21,24 @@ class SideBar extends TabView {
 
         generalTab = new GeneralTab();
         addChild(generalTab);
-
-        controlTab = new ControlTab();
     }
 
     public function controlSelected(control:IControl) {
-        if(contains(controlTab) == false) {
+        if(controlTab == null) {
+            controlTab = new ControlTab();
             addChild(controlTab); 
         }
+        controlTab.setControl(control);
         selectedIndex = 1;
+    }
+
+    public function controlUpdated(control:IControl) {
+        controlTab.setControl(control);    
     }
 
     public function controlDeselected(control:IControl) {
         selectedIndex = 0;
         removeTab(1);
+        controlTab = null;
     }
 }

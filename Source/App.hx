@@ -29,6 +29,7 @@ class App extends HBox {
 
         instrumentBuilder.onControlSelected.add(sideBar.controlSelected);
         instrumentBuilder.onControlDeselected.add(sideBar.controlDeselected);
+        instrumentBuilder.onControlUpdated.add(sideBar.controlUpdated);
     }
 
     private function onFrameEntered(e:Event) {

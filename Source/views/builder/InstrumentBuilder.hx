@@ -30,6 +30,7 @@ class InstrumentBuilder extends VBox {
 
     public var onControlSelected:Signal1<IControl> = new Signal1<IControl>();
     public var onControlDeselected:Signal1<IControl> = new Signal1<IControl>();
+    public var onControlUpdated:Signal1<IControl> = new Signal1<IControl>();
 
     private var instrument:Instrument;
     private var selectedControl:IControl;
@@ -115,6 +116,7 @@ class InstrumentBuilder extends VBox {
             selectedControl.properties.x = Std.int(mouseEvent.stageX - instrument.stageX - controlMouseX);
             selectedControl.properties.y = Std.int(mouseEvent.stageY - instrument.stageY - controlMouseY);
             selectedControl.update();
+            onControlUpdated.dispatch(selectedControl);
         }
     }
 }
