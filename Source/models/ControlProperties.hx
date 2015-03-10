@@ -1,5 +1,4 @@
-package views.instrument.controls;
-
+package models;
 
 class ControlProperties {
     public var x:Int = 0;

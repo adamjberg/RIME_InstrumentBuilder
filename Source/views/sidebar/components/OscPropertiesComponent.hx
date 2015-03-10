@@ -4,7 +4,7 @@ import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.controls.Text;
 import haxe.ui.toolkit.events.UIEvent;
 import views.controls.LabelledTextInput;
-import views.instrument.controls.ControlProperties;
+import models.ControlProperties;
 import views.instrument.controls.IControl;
 import views.sidebar.components.SidebarComponent;
 

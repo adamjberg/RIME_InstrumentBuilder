@@ -9,6 +9,7 @@ import haxe.ui.toolkit.core.renderers.ItemRenderer;
 import haxe.ui.toolkit.events.UIEvent;
 import msignal.Signal.Signal1;
 import openfl.events.MouseEvent;
+import models.ControlProperties;
 import views.instrument.controls.*;
 import views.instrument.Instrument;
 

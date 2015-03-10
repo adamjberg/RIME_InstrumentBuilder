@@ -1,7 +1,7 @@
 package views.instrument.controls;
 
 import haxe.ui.toolkit.controls.Button;
-import views.instrument.controls.ControlProperties;
+import models.ControlProperties;
 import views.instrument.controls.IControl;
 
 class ToggleButton extends Button implements IControl {

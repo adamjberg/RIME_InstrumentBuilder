@@ -1,6 +1,6 @@
 package views.instrument.controls;
 
-import views.instrument.controls.ControlProperties;
+import models.ControlProperties;
 
 interface IControl {
     public var properties(get, set):ControlProperties;

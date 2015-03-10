@@ -1,6 +1,6 @@
 package views.instrument.controls;
 
-import views.instrument.controls.ControlProperties;
+import models.ControlProperties;
 import views.instrument.controls.IControl;
 
 class VSlider extends haxe.ui.toolkit.controls.VSlider implements IControl {
