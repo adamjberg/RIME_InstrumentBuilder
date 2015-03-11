@@ -7,6 +7,7 @@ import haxe.ui.toolkit.core.Component;
 import haxe.ui.toolkit.core.PopupManager;
 import haxe.ui.toolkit.core.renderers.ItemRenderer;
 import haxe.ui.toolkit.events.UIEvent;
+import models.Control;
 import msignal.Signal.Signal1;
 import openfl.events.MouseEvent;
 import models.ControlProperties;
@@ -29,9 +30,12 @@ class InstrumentBuilder extends VBox {
         VSlider
     ];
 
-    public var onControlSelected:Signal1<IControl> = new Signal1<IControl>();
-    public var onControlDeselected:Signal1<IControl> = new Signal1<IControl>();
-    public var onControlUpdated:Signal1<IControl> = new Signal1<IControl>();
+    public var onControlAdded:Signal1<ControlProperties> = new Signal1<ControlProperties>();
+    public var onControlSelected:Signal1<String> = new Signal1<String>();
+    public var onControlDeselected:Signal1<String> = new Signal1<String>();
+    public var onControlUpdated:Signal1<String> = new Signal1<String>();
+
+    private var controlProperties:Array<ControlProperties>;
 
     private var instrument:Instrument;
     private var selectedControl:IControl;
@@ -40,8 +44,11 @@ class InstrumentBuilder extends VBox {
     private var controlMouseX:Int = 0;
     private var controlMouseY:Int = 0;
 
-    public function new() {
+    public function new(?controlProperties:Array<ControlProperties>) {
         super();
+
+        this.controlProperties = controlProperties;
+
         percentHeight = percentWidth = 100;
         style.backgroundColor = 0xAAAAAA;
 
@@ -49,7 +56,7 @@ class InstrumentBuilder extends VBox {
         spacer.percentHeight = 50;
         addChild(spacer);
 
-        instrument = new Instrument();
+        instrument = new Instrument(controlProperties);
         instrument.horizontalAlign = "center";
         addChild(instrument);
 
@@ -74,20 +81,19 @@ class InstrumentBuilder extends VBox {
 
     private function controlSelected(selectedItem:ItemRenderer) {
         var selectedControlName:String = selectedItem.data.text;
-        var selectedControlIndex:Int = CONTROL_NAMES.indexOf(selectedControlName);
         var properties:ControlProperties = new ControlProperties();
         properties.x = mouseX;
         properties.y = mouseY;
+        properties.type = selectedControlName;
 
-        var controlClass:Dynamic = CONTROL_CLASSES[selectedControlIndex];
-        var control:Dynamic = Type.createInstance(controlClass, [properties]);
-        var controlAsComponent:Component = cast(control, Component);
-        instrument.addChild(controlAsComponent);
+        var control:IControl = instrument.addControlFromProperties(properties);
+        var controlAsComponent = cast(control, Component);
         controlAsComponent.addEventListener(MouseEvent.MOUSE_DOWN, controlPressed);
         controlAsComponent.addEventListener(UIEvent.MOUSE_DOWN, controlMouseDown);
         controlAsComponent.addEventListener(UIEvent.MOUSE_UP, controlMouseUp);
-        
-        onControlSelected.dispatch(control);
+
+        onControlAdded.dispatch(control.properties);
+        onControlSelected.dispatch(control.properties.addressPattern);
     }
 
     private function controlPressed(mouseEvent:MouseEvent) {
@@ -104,11 +110,13 @@ class InstrumentBuilder extends VBox {
         controlMouseX = Std.int(uiEvent.stageX - uiEvent.component.stageX);
         controlMouseY = Std.int(uiEvent.stageY - uiEvent.component.stageY);
         instrument.addEventListener(UIEvent.MOUSE_MOVE, moveMoved);
-        onControlSelected.dispatch(selectedControl);
+        onControlSelected.dispatch(selectedControl.properties.addressPattern);
     }
 
     private function mouseDown(mouseEvent:MouseEvent) {
-        onControlDeselected.dispatch(selectedControl);
+        if(selectedControl != null) {
+            onControlDeselected.dispatch(selectedControl.properties.addressPattern);
+        }
         selectedControl = null;
     }
 
@@ -121,7 +129,7 @@ class InstrumentBuilder extends VBox {
             selectedControl.properties.x = Std.int(mouseEvent.stageX - instrument.stageX - controlMouseX);
             selectedControl.properties.y = Std.int(mouseEvent.stageY - instrument.stageY - controlMouseY);
             selectedControl.update();
-            onControlUpdated.dispatch(selectedControl);
+            onControlUpdated.dispatch(selectedControl.properties.addressPattern);
         }
     }
 }

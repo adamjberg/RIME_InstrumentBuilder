@@ -4,6 +4,7 @@ import haxe.ui.toolkit.containers.TabView;
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Text;
 import models.Connection;
+import models.Control;
 import models.LayoutSettings;
 import msignal.Signal.Signal2;
 import openfl.events.Event;
@@ -21,6 +22,7 @@ class SideBar extends TabView {
 
     public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection) {
         super();
+
         width = 250;
         percentHeight = 100;
 
@@ -29,20 +31,20 @@ class SideBar extends TabView {
         addChild(generalTab);
     }
 
-    public function controlSelected(control:IControl) {
+    public function controlSelected(control:Control) {
         if(controlTab == null) {
-            controlTab = new ControlTab();
+            controlTab = new ControlTab(control);
             addChild(controlTab); 
         }
         controlTab.setControl(control);
         selectedIndex = 1;
     }
 
-    public function controlUpdated(control:IControl) {
+    public function controlUpdated(control:Control) {
         controlTab.setControl(control);    
     }
 
-    public function controlDeselected(control:IControl) {
+    public function controlDeselected(control:Control) {
         selectedIndex = 0;
         removeTab(1);
         controlTab = null;

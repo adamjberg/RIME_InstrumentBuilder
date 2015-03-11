@@ -2,6 +2,7 @@ package views.sidebar.components;
 
 import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.events.UIEvent;
+import msignal.Signal.Signal0;
 import views.controls.LabelledTextInput;
 import models.ControlProperties;
 import views.instrument.controls.IControl;
@@ -11,7 +12,9 @@ class ControlPropertiesComponent extends SidebarComponent {
 
     private static inline var TITLE:String = "Properties";
 
-    private var control:IControl;
+    public var onPropertiesUpdated:Signal0 = new Signal0();
+
+    private var properties:ControlProperties;
 
     private var xInput:LabelledTextInput;
     private var yInput:LabelledTextInput;
@@ -48,9 +51,8 @@ class ControlPropertiesComponent extends SidebarComponent {
         addChild(widthHeightHBox);
     }
 
-    public function setControl(control:IControl) {
-        this.control = control;
-        var properties:ControlProperties = control.properties;
+    public function setControlProperties(properties:ControlProperties) {
+        this.properties = properties;
         xInput.setText(Std.string(properties.x));
         yInput.setText(Std.string(properties.y));
         widthInput.setText(Std.string(properties.width));
@@ -58,7 +60,6 @@ class ControlPropertiesComponent extends SidebarComponent {
     }
 
     private function updateControl(e:UIEvent) {
-        var properties:ControlProperties = control.properties;
         var x:Dynamic = Std.parseInt(xInput.getText());
         var y:Dynamic = Std.parseInt(yInput.getText());
         var width:Dynamic = Std.parseInt(widthInput.getText());
@@ -76,6 +77,7 @@ class ControlPropertiesComponent extends SidebarComponent {
         if(height != null) {
             properties.height = height;
         }
-        control.update();
+
+        onPropertiesUpdated.dispatch();
     }
 }
