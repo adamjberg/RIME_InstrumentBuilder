@@ -21,7 +21,8 @@ class App extends HBox {
     public var controlsMap:Map<String, Control>;
     public var controlValues:Map<String, Float>;
 
-    public var server:UdpServer;
+    public var clientUdpServer:UdpServer;
+    public var serverUdpServer:UdpServer;
     public var sideBar:SideBar;
     public var instrumentBuilder:InstrumentBuilder;
 
@@ -49,8 +50,9 @@ class App extends HBox {
         controlProperties.push(props);
 
 #if !neko
-        server = new UdpServer("127.0.0.1", 11000);
-        server.onOSCMessageReceived.add(oscMessageReceived);
+        clientUdpServer = new UdpServer("127.0.0.1", 11000);
+        clientUdpServer.onOSCMessageReceived.add(oscMessageReceived);
+        serverUdpServer = new UdpServer("127.0.0.1", 13000);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
         sideBar = new SideBar(layoutSettings, clientConnection, serverConnection);
@@ -83,7 +85,7 @@ class App extends HBox {
                 } else {
                     message.addFloat(value);
                 }
-                server.send(message);
+                serverUdpServer.send(message);
             }
         }
     }
@@ -115,6 +117,7 @@ class App extends HBox {
     }
 
     private function onFrameEntered(e:Event) {
-        server.update();
+        clientUdpServer.update();
+        serverUdpServer.update();
     }
 }
