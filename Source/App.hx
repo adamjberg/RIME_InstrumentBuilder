@@ -33,8 +33,8 @@ class App extends HBox {
         percentHeight = 100;
 
         layoutSettings = new LayoutSettings("layout1", 320, 480);
-        clientConnection = new Connection("127.0.0.1", 11000);
-        serverConnection = new Connection("127.0.0.1", 12000);
+        clientConnection = new Connection("128.189.201.204", 12000);
+        serverConnection = new Connection("127.0.0.1", 13000);
 
         controlsMap = new Map<String, Control>();
         controlValues = new Map<String, Float>();
@@ -110,8 +110,10 @@ class App extends HBox {
 
 #if !neko
         clientUdpServer = new UdpServer(12000);
+        clientUdpServer.connect(clientConnection);
         clientUdpServer.onOSCMessageReceived.add(oscMessageReceived);
         serverUdpServer = new UdpServer(12001);
+        serverUdpServer.connect(serverConnection);
         serverUdpServer.onOSCMessageReceived.add(oscMessageReceived);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end

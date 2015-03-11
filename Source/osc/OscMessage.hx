@@ -44,6 +44,7 @@ class OscMessage {
     {
         var message = new OscMessage();
         var bytesInput = new BytesInput(bytes);
+        bytesInput.bigEndian = true;
 
         if(message.parseAddrPattern(bytesInput) == false) {
             trace("null add ");
