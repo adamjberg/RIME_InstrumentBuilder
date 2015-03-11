@@ -46,6 +46,10 @@ class InstrumentBuilder extends VBox {
         instrument.horizontalAlign = "center";
         addChild(instrument);
 
+        for(control in controlProperties) {
+            addControlToBuilder(control);
+        }
+
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
         addEventListener(UIEvent.MOUSE_UP, mouseUp);
         instrument.addEventListener(MouseEvent.MOUSE_DOWN, instrumentPressed);
@@ -79,6 +83,10 @@ class InstrumentBuilder extends VBox {
         properties.y = mouseY;
         properties.type = selectedControlName;
 
+        addControlToBuilder(properties);
+    }
+
+    private function addControlToBuilder(properties:ControlProperties) {
         var control:IControl = instrument.addControlFromProperties(properties);
         var controlAsComponent = cast(control, Component);
 

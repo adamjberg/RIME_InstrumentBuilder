@@ -39,14 +39,73 @@ class App extends HBox {
         controlsMap = new Map<String, Control>();
         controlValues = new Map<String, Float>();
 
+        var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
+
         var props:ControlProperties = new ControlProperties();
-        props.addressPattern = "/control1";
-        props.type = Control.TYPE_PUSHBUTTON;
+        var control:Control;
+        var sliderWidth:Int = 300;
+        var buttonWidth:Int = 300;
+        var buttonHeight:Int = 40;
+        
+        props.addressPattern = "/slider1";
+        props.type = Control.TYPE_HSLIDER;
         props.x = 10;
         props.y = 10;
-        var control:Control = new Control(props, [new Command("/x", ["/control1"])]);
+        props.width = sliderWidth;
+        control = new Control(props, [new Command("/x", ["/slider1"])]);
         controlsMap.set(props.addressPattern, control);
-        var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
+        controlProperties.push(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/slider2";
+        props.type = Control.TYPE_HSLIDER;
+        props.x = 10;
+        props.y = 50;
+        props.width = sliderWidth;
+        control = new Control(props, [new Command("/y", ["/slider2"])]);
+        controlsMap.set(props.addressPattern, control);
+        controlProperties.push(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/button1";
+        props.type = Control.TYPE_PUSHBUTTON;
+        props.x = 10;
+        props.y = 90;
+        props.width = buttonWidth;
+        props.height = buttonHeight;
+        control = new Control(props, [new Command("/visible", ["/button1"])]);
+        controlsMap.set(props.addressPattern, control);
+        controlProperties.push(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/button2";
+        props.type = Control.TYPE_PUSHBUTTON;
+        props.x = 10;
+        props.y = 140;
+        props.width = buttonWidth;
+        props.height = buttonHeight;
+        control = new Control(props, [new Command("/visible", ["/button2"])]);
+        controlsMap.set(props.addressPattern, control);
+        controlProperties.push(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/slider3";
+        props.type = Control.TYPE_HSLIDER;
+        props.x = 10;
+        props.y = 190;
+        props.width = sliderWidth;
+        control = new Control(props, [new Command("/width", ["/slider3"])]);
+        controlsMap.set(props.addressPattern, control);
+        controlProperties.push(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/slider4";
+        props.type = Control.TYPE_HSLIDER;
+        props.x = 10;
+        props.y = 230;
+        props.width = sliderWidth;
+        control = new Control(props, [new Command("/height", ["/slider4"])]);
+        controlsMap.set(props.addressPattern, control);
         controlProperties.push(props);
 
 #if !neko

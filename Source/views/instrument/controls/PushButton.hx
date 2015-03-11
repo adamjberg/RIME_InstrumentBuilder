@@ -21,8 +21,12 @@ class PushButton extends Button implements IControl {
     public function new(?properties:ControlProperties) {
         super();
         this.properties = properties;
-        properties.width = DEFAULT_WIDTH;
-        properties.height = DEFAULT_HEIGHT;
+        if(this.properties.width == 0) {
+            properties.width = DEFAULT_WIDTH;
+        }
+        if(properties.height == 0) {
+            properties.height = DEFAULT_HEIGHT;
+        }
         update();
     }
 

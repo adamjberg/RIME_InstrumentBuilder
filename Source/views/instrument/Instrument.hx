@@ -16,7 +16,6 @@ class Instrument extends Absolute {
         this.controlProperties = controlProperties;
 
         style.backgroundColor = 0xFFFFFF;
-        update();
     }
 
     public function update() {

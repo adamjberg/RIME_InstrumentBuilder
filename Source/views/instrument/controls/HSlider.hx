@@ -13,7 +13,9 @@ class HSlider extends haxe.ui.toolkit.controls.HSlider implements IControl {
         return _properties;
     }
     public function set_properties(props:ControlProperties):ControlProperties {
-        return _properties = props;
+        _properties = props;
+        update();
+        return _properties;
     }
 
     public function new(?properties:ControlProperties) {
@@ -23,8 +25,13 @@ class HSlider extends haxe.ui.toolkit.controls.HSlider implements IControl {
 
     override public function initialize() {
         super.initialize();
-        properties.width = DEFAULT_WIDTH;
-        properties.height = Std.int(height);
+
+        if(properties.width == 0) {
+            properties.width = DEFAULT_WIDTH;
+        }
+        if(properties.height == 0) {
+            properties.height = Std.int(height);
+        }
         update();
     }
 

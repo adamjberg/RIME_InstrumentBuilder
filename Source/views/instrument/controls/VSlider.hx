@@ -23,8 +23,12 @@ class VSlider extends haxe.ui.toolkit.controls.VSlider implements IControl {
 
     override public function initialize() {
         super.initialize();
-        properties.height = DEFAULT_HEIGHT;
-        properties.width = Std.int(_thumb.width);
+        if(this.properties.width == 0) {
+            properties.width = Std.int(_thumb.width);
+        }
+        if(properties.height == 0) {
+            properties.height = DEFAULT_HEIGHT;
+        }
         update();
     }
 
