@@ -6,6 +6,7 @@ import haxe.ui.toolkit.controls.Text;
 import models.Connection;
 import models.Control;
 import models.LayoutSettings;
+import msignal.Signal.Signal1;
 import msignal.Signal.Signal2;
 import openfl.events.Event;
 import views.instrument.controls.IControl;
@@ -14,6 +15,8 @@ import views.sidebar.tabs.*;
 class SideBar extends TabView {
 
     public var onDimensionsChanged:Signal2<Int, Int>;
+    public var onClientConnectPressed:Signal1<Connection> = new Signal1<Connection>();
+    public var onServerConnectPressed:Signal1<Connection> = new Signal1<Connection>();
 
     private var generalTab:GeneralTab;
     private var controlTab:ControlTab;
@@ -27,6 +30,10 @@ class SideBar extends TabView {
         percentHeight = 100;
 
         generalTab = new GeneralTab(layoutSettings, clientConnection, serverConnection);
+
+        generalTab.onClientConnectPressed.add(onClientConnectPressed.dispatch);
+        generalTab.onServerConnectPressed.add(onServerConnectPressed.dispatch);
+
         onDimensionsChanged = generalTab.onDimensionsChanged;
         addChild(generalTab);
     }

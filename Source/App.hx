@@ -56,6 +56,8 @@ class App extends HBox {
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
         sideBar = new SideBar(layoutSettings, clientConnection, serverConnection);
+        sideBar.onClientConnectPressed.add(connectClient);
+        sideBar.onServerConnectPressed.add(connectServer);
         addChild(sideBar);
 
         instrumentBuilder = new InstrumentBuilder(controlProperties);
@@ -88,6 +90,14 @@ class App extends HBox {
                 serverUdpServer.send(message);
             }
         }
+    }
+
+    private function connectClient(connection:Connection) {
+        clientUdpServer.connect(connection);
+    }
+
+    private function connectServer(connection:Connection) {
+        serverUdpServer.connect(connection);
     }
 
     private function getControl(addressPattern:String):Control {

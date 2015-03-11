@@ -1,5 +1,6 @@
 package;
 
+import models.Connection;
 import msignal.Signal.Signal1;
 
 import hxudp.UdpSocket;
@@ -22,9 +23,11 @@ class UdpServer {
         {
             trace("Failed To Create Socket");
         }
-        trace("connecting to " + ipAddress, portNumber);
-        socket.connect(ipAddress, portNumber);
         socket.setNonBlocking(true);
+    }
+
+    public function connect(connection:Connection) {
+        socket.connect(connection.ipAddress, connection.port);
     }
 
     public function send(message:OscMessage) {
