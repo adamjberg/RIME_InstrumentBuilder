@@ -61,6 +61,12 @@ class InstrumentBuilder extends VBox {
         instrument.height = height;
     }
 
+    public function updateCurrentControl() {
+        if(selectedControl != null) {
+            selectedControl.update();
+        }
+    }
+
     private function instrumentPressed(mouseEvent:MouseEvent) {
         if(selectedControl == null) {
             mouseX = Std.int(mouseEvent.localX);

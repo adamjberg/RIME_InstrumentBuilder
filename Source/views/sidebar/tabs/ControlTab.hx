@@ -2,12 +2,15 @@ package views.sidebar.tabs;
 
 import models.Command;
 import models.Control;
+import msignal.Signal.Signal0;
 import views.instrument.controls.IControl;
 import views.sidebar.components.CommandComponent;
 import views.sidebar.components.ControlPropertiesComponent;
 import views.sidebar.components.OscPropertiesComponent;
 
 class ControlTab extends Tab {
+
+    public var onPropertiesUpdated:Signal0;
 
     private var control:Control;
 
@@ -21,6 +24,7 @@ class ControlTab extends Tab {
         this.control = control;
 
         controlProperties = new ControlPropertiesComponent();
+        onPropertiesUpdated = controlProperties.onPropertiesUpdated;
         addComponent(controlProperties);
         oscProperties = new OscPropertiesComponent();
         addComponent(oscProperties);

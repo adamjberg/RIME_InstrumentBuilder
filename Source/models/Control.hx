@@ -35,5 +35,9 @@ class Control {
         } else {
             this.commands = new Array<Command>();
         }
+
+        if(this.commands.length == 0) {
+            this.commands.push(new Command());
+        }
     }
 }

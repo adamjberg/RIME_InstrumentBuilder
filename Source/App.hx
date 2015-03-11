@@ -118,6 +118,7 @@ class App extends HBox {
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
         sideBar = new SideBar(layoutSettings, clientConnection, serverConnection);
+        sideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
         sideBar.onClientConnectPressed.add(connectClient);
         sideBar.onServerConnectPressed.add(connectServer);
         addChild(sideBar);
@@ -186,6 +187,10 @@ class App extends HBox {
 
     private function controlUpdated(addressPattern:String) {
         sideBar.controlUpdated(getControl(addressPattern));
+    }
+
+    private function controlPropertiesUpdated() {
+        instrumentBuilder.updateCurrentControl();
     }
 
     private function onFrameEntered(e:Event) {
