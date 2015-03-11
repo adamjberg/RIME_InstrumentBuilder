@@ -50,9 +50,10 @@ class App extends HBox {
         controlProperties.push(props);
 
 #if !neko
-        clientUdpServer = new UdpServer("127.0.0.1", 11000);
+        clientUdpServer = new UdpServer(12000);
         clientUdpServer.onOSCMessageReceived.add(oscMessageReceived);
-        serverUdpServer = new UdpServer("127.0.0.1", 13000);
+        serverUdpServer = new UdpServer(12001);
+        serverUdpServer.onOSCMessageReceived.add(oscMessageReceived);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
         sideBar = new SideBar(layoutSettings, clientConnection, serverConnection);

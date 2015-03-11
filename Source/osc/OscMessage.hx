@@ -38,7 +38,6 @@ class OscMessage {
         typeTag = ",";
         arguments = new Array<Dynamic>();
         argumentsByteArray = new ByteArray();
-        argumentsByteArray.bigEndian = false;
     }
 
     public static function fromBytes(bytes:Bytes):OscMessage
@@ -123,7 +122,6 @@ class OscMessage {
     public function getBytes():ByteArray
     {
         var byteArray:ByteArray = new ByteArray();
-        byteArray.bigEndian = false;
 
         addStringToByteArray(byteArray, addressPattern);
         addStringToByteArray(byteArray, typeTag);

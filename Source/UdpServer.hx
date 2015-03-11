@@ -9,17 +9,15 @@ import haxe.io.Bytes;
 import osc.OscMessage;
 
 class UdpServer {
-
     private static inline var BUFF_SIZE:Int = 65535;
-    private static inline var BIND_PORT:Int = 12000;
 
     public var onOSCMessageReceived:Signal1<OscMessage> = new Signal1<OscMessage>();
 
     private var socket:UdpSocket;
 
-    public function new (ipAddress, portNumber) {
+    public function new (bindPort) {
         socket = new UdpSocket();
-        if(socket.create() == false || socket.bind(BIND_PORT) == false)
+        if(socket.create() == false || socket.bind(bindPort) == false)
         {
             trace("Failed To Create Socket");
         }
@@ -43,8 +41,6 @@ class UdpServer {
             var message:OscMessage = OscMessage.fromBytes(b);
             if(message != null) {
                 onOSCMessageReceived.dispatch(message);
-            } else {
-                trace("Message is null");
             }
         }
     }

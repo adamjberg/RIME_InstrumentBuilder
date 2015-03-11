@@ -12,7 +12,7 @@ sock.settimeout(1)
 
 addrPattern = "/control1" + chr(0) + chr(0) + chr(0)
 typeTag = ",f" + chr(0) + chr(0)
-f = struct.pack("f", 10000)
+f = struct.pack("f", 50)
 
 while True:
     sock.sendto(addrPattern + typeTag + f, (UDP_IP, 12000))
