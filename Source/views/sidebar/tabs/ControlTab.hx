@@ -24,7 +24,7 @@ class ControlTab extends Tab {
         addComponent(controlProperties);
         oscProperties = new OscPropertiesComponent();
         addComponent(oscProperties);
-        commandComponent = new CommandComponent(new Command());
+        commandComponent = new CommandComponent();
         addComponent(commandComponent);
     }
 
@@ -32,5 +32,6 @@ class ControlTab extends Tab {
         this.control = control;
         controlProperties.setControlProperties(control.properties);
         oscProperties.setProperties(control.properties);
+        commandComponent.setCommands(control.commands);
     }
 }

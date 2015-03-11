@@ -14,23 +14,29 @@ class CommandComponent extends SidebarComponent {
     private var addressPatternInput:LabelledTextInput;
     private var valueInput:LabelledTextInput;
 
-    public function new(?command:Command) {
+    public function new() {
         super(TITLE);
 
-        this.command = command;
-
         addressPatternInput = new LabelledTextInput("Address Pattern");
-        addressPatternInput.setText(command.addressPattern);
         addressPatternInput.addEventListener(UIEvent.CHANGE, inputChanged);
         addChild(addressPatternInput);
 
         valueInput = new LabelledTextInput("Value");
-        valueInput.setText(command.values[0]);
         valueInput.addEventListener(UIEvent.CHANGE, inputChanged);
         addChild(valueInput);
     }
 
+    public function setCommands(commands:Array<Command>) {
+        command = commands[0];
+        addressPatternInput.setText(command.addressPattern);
+        valueInput.setText(command.values[0]);
+    }
+
     private function inputChanged(e:UIEvent) {
+        if(command == null) {
+            return;
+        }
+
         command.addressPattern = addressPatternInput.getText();
 
         var valueString:String = valueInput.getText();
