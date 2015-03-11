@@ -11,8 +11,8 @@ class Control {
 
     public static inline var TYPE_PUSHBUTTON:String = "Push Button";
     public static inline var TYPE_TOGGLE:String = "Toggle";
-    public static inline var TYPE_VSLIDER:String = "VSlider";
-    public static inline var TYPE_HSLIDER:String = "HSlider";
+    public static inline var TYPE_VSLIDER:String = "SliderV";
+    public static inline var TYPE_HSLIDER:String = "SliderH";
 
     public static var CONTROL_CLASSES:Map<String, Dynamic> = [
         TYPE_PUSHBUTTON => PushButton,

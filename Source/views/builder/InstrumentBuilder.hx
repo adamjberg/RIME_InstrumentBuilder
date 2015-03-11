@@ -16,20 +16,6 @@ import views.instrument.Instrument;
 
 class InstrumentBuilder extends VBox {
 
-    private static var CONTROL_NAMES:Array<String> = [
-        "Push Button",
-        "Toggle Button",
-        "HSlider",
-        "VSlider"
-    ];
-
-    private static var CONTROL_CLASSES:Array<Dynamic> = [
-        PushButton,
-        ToggleButton,
-        HSlider,
-        VSlider
-    ];
-
     public var onControlAdded:Signal1<ControlProperties> = new Signal1<ControlProperties>();
     public var onControlSelected:Signal1<String> = new Signal1<String>();
     public var onControlDeselected:Signal1<String> = new Signal1<String>();
@@ -75,7 +61,14 @@ class InstrumentBuilder extends VBox {
         if(selectedControl == null) {
             mouseX = Std.int(mouseEvent.localX);
             mouseY = Std.int(mouseEvent.localY);
-            PopupManager.instance.showList(CONTROL_NAMES, -1, "Select a Control", null, controlSelected);
+            var controlNames:Array<String> = new Array<String>();
+            for(key in Control.CONTROL_CLASSES.keys()) {
+                controlNames.push(key);
+            }
+            controlNames.sort(function(a,b) {
+                return Reflect.compare(a.toLowerCase(), b.toLowerCase());
+            });
+            PopupManager.instance.showList(controlNames, -1, "Select a Control", {}, controlSelected);
         }
     }
 
@@ -88,6 +81,7 @@ class InstrumentBuilder extends VBox {
 
         var control:IControl = instrument.addControlFromProperties(properties);
         var controlAsComponent = cast(control, Component);
+
         controlAsComponent.addEventListener(MouseEvent.MOUSE_DOWN, controlPressed);
         controlAsComponent.addEventListener(UIEvent.MOUSE_DOWN, controlMouseDown);
         controlAsComponent.addEventListener(UIEvent.MOUSE_UP, controlMouseUp);
