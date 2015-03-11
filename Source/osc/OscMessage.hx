@@ -25,7 +25,11 @@ class OscMessage {
         {
             addrPattern = DEFAULT_ADDR_PATTERN;
         }
-        addressPattern = "/" + addrPattern;
+        if(addrPattern.charAt(0) != "/") {
+            addressPattern = "/" + addrPattern;
+        } else {
+            addressPattern = addrPattern;
+        }
         clear();
     }
 
@@ -34,6 +38,7 @@ class OscMessage {
         typeTag = ",";
         arguments = new Array<Dynamic>();
         argumentsByteArray = new ByteArray();
+        argumentsByteArray.bigEndian = false;
     }
 
     public static function fromBytes(bytes:Bytes):OscMessage
@@ -41,9 +46,18 @@ class OscMessage {
         var message = new OscMessage();
         var bytesInput = new BytesInput(bytes);
 
-        message.parseAddrPattern(bytesInput);
-        message.parseTypeTag(bytesInput);
-        message.parseArguments(bytesInput);
+        if(message.parseAddrPattern(bytesInput) == false) {
+            trace("null add ");
+            return null;
+        }
+        if(message.parseTypeTag(bytesInput) == false) {
+            trace("null type " + message.addressPattern);
+            return null;
+        }
+        if(message.parseArguments(bytesInput) == false) {
+            trace("null args");
+            return null;
+        }
 
         return message;
     }
@@ -109,6 +123,7 @@ class OscMessage {
     public function getBytes():ByteArray
     {
         var byteArray:ByteArray = new ByteArray();
+        byteArray.bigEndian = false;
 
         addStringToByteArray(byteArray, addressPattern);
         addStringToByteArray(byteArray, typeTag);
