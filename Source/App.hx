@@ -6,12 +6,12 @@ import models.Connection;
 import models.Control;
 import models.ControlProperties;
 import models.LayoutSettings;
-import models.sensors.LinearAccelerometer;
-import models.sensors.Sensor;
+import models.sensors.*;
 import openfl.events.Event;
 import osc.OscMessage;
 import views.builder.InstrumentBuilder;
 import views.leftsidebar.LeftSideBar;
+import views.sensorsidebar.SensorSideBar;
 
 class App extends HBox {
 
@@ -27,6 +27,7 @@ class App extends HBox {
     public var clientUdpServer:UdpServer;
     public var serverUdpServer:UdpServer;
     public var leftSideBar:LeftSideBar;
+    public var sensorSideBar:SensorSideBar;
     public var instrumentBuilder:InstrumentBuilder;
 
     public function new() {
@@ -41,8 +42,19 @@ class App extends HBox {
 
         controlsMap = new Map<String, Control>();
         controlValues = new Map<String, Float>();
-        sensors = new Array<Sensor>();
-        sensors.push(new LinearAccelerometer());
+        sensors = [
+            new Accelerometer(),
+            new AmbientTemperature(),
+            new Gravity(),
+            new Gyroscope(),
+            new Humidity(),
+            new Light(),
+            new LinearAccelerometer(),
+            new Magnetic(),
+            new Orientation(),
+            new Pressure(),
+            new Proximity()
+        ];
 
         var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
 
@@ -130,6 +142,9 @@ class App extends HBox {
 
         instrumentBuilder = new InstrumentBuilder(controlProperties);
         addChild(instrumentBuilder);
+
+        sensorSideBar = new SensorSideBar(sensors);
+        addChild(sensorSideBar);
 
         leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
 
