@@ -3,6 +3,7 @@ package views.leftsidebar;
 import haxe.ui.toolkit.containers.TabView;
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Text;
+import models.Command;
 import models.Connection;
 import models.Control;
 import models.LayoutSettings;
@@ -12,6 +13,7 @@ import msignal.Signal.Signal2;
 import openfl.events.Event;
 import views.instrument.controls.IControl;
 import views.leftsidebar.tabs.*;
+import views.leftsidebar.tabs.CommandsTab;
 
 class LeftSideBar extends TabView {
 
@@ -22,10 +24,11 @@ class LeftSideBar extends TabView {
 
     private var generalTab:GeneralTab;
     private var controlTab:ControlTab;
+    private var commandsTab:CommandsTab;
 
     private var sizeLabel:Text;
 
-    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection) {
+    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection, ?commands:Array<Command>) {
         super();
 
         width = 250;
@@ -36,8 +39,11 @@ class LeftSideBar extends TabView {
         generalTab.onClientConnectPressed.add(onClientConnectPressed.dispatch);
         generalTab.onServerConnectPressed.add(onServerConnectPressed.dispatch);
 
+        commandsTab = new CommandsTab(commands);
+
         onDimensionsChanged = generalTab.onDimensionsChanged;
         addChild(generalTab);
+        addChild(commandsTab);
     }
 
     public function controlSelected(control:Control) {
@@ -47,7 +53,7 @@ class LeftSideBar extends TabView {
             addChild(controlTab); 
         }
         controlTab.setControl(control);
-        selectedIndex = 1;
+        selectedIndex = 2;
     }
 
     public function controlUpdated(control:Control) {
@@ -56,7 +62,7 @@ class LeftSideBar extends TabView {
 
     public function controlDeselected(control:Control) {
         selectedIndex = 0;
-        removeTab(1);
+        removeTab(2);
         controlTab = null;
     }
 }

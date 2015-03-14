@@ -15,11 +15,13 @@ class SensorSideBar extends VBox {
         super();
 
         this.sensors = sensors;
+        this.style.spacing = 0;
 
         width = 250;
         percentHeight = 100;
 
         sensorScrollList = new ListView();
+        sensorScrollList.style.borderSize = 0;
         sensorScrollList.itemRenderer = ComponentItemRenderer;
         
         sensorScrollList.percentWidth = 100;

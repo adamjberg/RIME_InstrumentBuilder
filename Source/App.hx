@@ -23,6 +23,7 @@ class App extends HBox {
     public var controlsMap:Map<String, Control>;
     public var controlValues:Map<String, Float>;
     public var sensors:Array<Sensor>;
+    public var commands:Array<Command>;
 
     public var clientUdpServer:UdpServer;
     public var serverUdpServer:UdpServer;
@@ -54,6 +55,14 @@ class App extends HBox {
             new Orientation(),
             new Pressure(),
             new Proximity()
+        ];
+        commands = [
+            new Command("/test", ["success"]),
+            new Command("/test2", ["success2"]),
+            new Command("/test3", ["success"]),
+            new Command("/test4", ["success2"]),
+            new Command("/test5", ["success"]),
+            new Command("/test6", ["success2"]),
         ];
 
         var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
@@ -134,7 +143,7 @@ class App extends HBox {
         serverUdpServer.onOSCMessageReceived.add(oscMessageReceived);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
-        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection);
+        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
         leftSideBar.onClientConnectPressed.add(connectClient);
         leftSideBar.onServerConnectPressed.add(connectServer);
