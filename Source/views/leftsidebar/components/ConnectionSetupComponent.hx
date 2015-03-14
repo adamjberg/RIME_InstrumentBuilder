@@ -1,11 +1,11 @@
-package views.sidebar.components;
+package views.leftsidebar.components;
 
 import haxe.ui.toolkit.controls.Button;
 import haxe.ui.toolkit.events.UIEvent;
 import models.Connection;
 import msignal.Signal.Signal1;
 import views.controls.LabelledTextInput;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class ConnectionSetupComponent extends SidebarComponent {
 

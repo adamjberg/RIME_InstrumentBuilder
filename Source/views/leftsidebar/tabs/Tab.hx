@@ -1,8 +1,8 @@
-package views.sidebar.tabs;
+package views.leftsidebar.tabs;
 
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Divider;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class Tab extends VBox {
 

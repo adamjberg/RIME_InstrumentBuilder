@@ -1,10 +1,10 @@
-package views.sidebar.components;
+package views.leftsidebar.components;
 
 import haxe.ui.toolkit.events.UIEvent;
 import models.LayoutSettings;
 import msignal.Signal.Signal2;
 import views.controls.LabelledTextInput;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class LayoutSidebarComponent extends SidebarComponent {
 

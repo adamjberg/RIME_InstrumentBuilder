@@ -1,12 +1,12 @@
-package views.sidebar.tabs;
+package views.leftsidebar.tabs;
 
 import models.Connection;
 import models.LayoutSettings;
 import msignal.Signal.Signal1;
 import msignal.Signal.Signal2;
-import views.sidebar.components.ConnectionSetupComponent;
-import views.sidebar.components.LayoutSidebarComponent;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.ConnectionSetupComponent;
+import views.leftsidebar.components.LayoutSidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class GeneralTab extends Tab {
 

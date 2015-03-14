@@ -1,4 +1,4 @@
-package views.sidebar.components;
+package views.leftsidebar.components;
 
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Text;

@@ -1,12 +1,12 @@
-package views.sidebar.tabs;
+package views.leftsidebar.tabs;
 
 import models.Command;
 import models.Control;
 import msignal.Signal.Signal0;
 import views.instrument.controls.IControl;
-import views.sidebar.components.CommandComponent;
-import views.sidebar.components.ControlPropertiesComponent;
-import views.sidebar.components.OscPropertiesComponent;
+import views.leftsidebar.components.CommandComponent;
+import views.leftsidebar.components.ControlPropertiesComponent;
+import views.leftsidebar.components.OscPropertiesComponent;
 
 class ControlTab extends Tab {
 

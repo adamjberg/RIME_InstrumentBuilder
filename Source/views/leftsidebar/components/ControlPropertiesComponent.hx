@@ -1,4 +1,4 @@
-package views.sidebar.components;
+package views.leftsidebar.components;
 
 import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.events.UIEvent;
@@ -6,7 +6,7 @@ import msignal.Signal.Signal0;
 import views.controls.LabelledTextInput;
 import models.ControlProperties;
 import views.instrument.controls.IControl;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class ControlPropertiesComponent extends SidebarComponent {
 

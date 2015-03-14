@@ -1,4 +1,4 @@
-package views.sidebar;
+package views.leftsidebar;
 
 import haxe.ui.toolkit.containers.TabView;
 import haxe.ui.toolkit.containers.VBox;
@@ -11,9 +11,9 @@ import msignal.Signal.Signal1;
 import msignal.Signal.Signal2;
 import openfl.events.Event;
 import views.instrument.controls.IControl;
-import views.sidebar.tabs.*;
+import views.leftsidebar.tabs.*;
 
-class SideBar extends TabView {
+class LeftSideBar extends TabView {
 
     public var onDimensionsChanged:Signal2<Int, Int>;
     public var onPropertiesUpdated:Signal0 = new Signal0();

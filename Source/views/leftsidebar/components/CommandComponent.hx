@@ -1,9 +1,9 @@
-package views.sidebar.components;
+package views.leftsidebar.components;
 
 import haxe.ui.toolkit.events.UIEvent;
 import models.Command;
 import views.controls.LabelledTextInput;
-import views.sidebar.components.SidebarComponent;
+import views.leftsidebar.components.SidebarComponent;
 
 class CommandComponent extends SidebarComponent {
 

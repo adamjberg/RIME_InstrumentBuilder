@@ -6,10 +6,12 @@ import models.Connection;
 import models.Control;
 import models.ControlProperties;
 import models.LayoutSettings;
+import models.sensors.LinearAccelerometer;
+import models.sensors.Sensor;
 import openfl.events.Event;
 import osc.OscMessage;
 import views.builder.InstrumentBuilder;
-import views.sidebar.SideBar;
+import views.leftsidebar.LeftSideBar;
 
 class App extends HBox {
 
@@ -20,10 +22,11 @@ class App extends HBox {
     public var serverConnection:Connection;
     public var controlsMap:Map<String, Control>;
     public var controlValues:Map<String, Float>;
+    public var sensors:Array<Sensor>;
 
     public var clientUdpServer:UdpServer;
     public var serverUdpServer:UdpServer;
-    public var sideBar:SideBar;
+    public var leftSideBar:LeftSideBar;
     public var instrumentBuilder:InstrumentBuilder;
 
     public function new() {
@@ -38,6 +41,8 @@ class App extends HBox {
 
         controlsMap = new Map<String, Control>();
         controlValues = new Map<String, Float>();
+        sensors = new Array<Sensor>();
+        sensors.push(new LinearAccelerometer());
 
         var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
 
@@ -117,16 +122,16 @@ class App extends HBox {
         serverUdpServer.onOSCMessageReceived.add(oscMessageReceived);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
 #end
-        sideBar = new SideBar(layoutSettings, clientConnection, serverConnection);
-        sideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
-        sideBar.onClientConnectPressed.add(connectClient);
-        sideBar.onServerConnectPressed.add(connectServer);
-        addChild(sideBar);
+        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection);
+        leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
+        leftSideBar.onClientConnectPressed.add(connectClient);
+        leftSideBar.onServerConnectPressed.add(connectServer);
+        addChild(leftSideBar);
 
         instrumentBuilder = new InstrumentBuilder(controlProperties);
         addChild(instrumentBuilder);
 
-        sideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
+        leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
 
         instrumentBuilder.onControlAdded.add(controlAdded);
         instrumentBuilder.onControlSelected.add(controlSelected);
@@ -178,15 +183,15 @@ class App extends HBox {
     }
 
     private function controlSelected(addressPattern:String) {
-        sideBar.controlSelected(getControl(addressPattern));
+        leftSideBar.controlSelected(getControl(addressPattern));
     }
 
     private function controlDeselected(addressPattern:String) {
-        sideBar.controlDeselected(getControl(addressPattern));
+        leftSideBar.controlDeselected(getControl(addressPattern));
     }
 
     private function controlUpdated(addressPattern:String) {
-        sideBar.controlUpdated(getControl(addressPattern));
+        leftSideBar.controlUpdated(getControl(addressPattern));
     }
 
     private function controlPropertiesUpdated() {
