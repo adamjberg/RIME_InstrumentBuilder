@@ -9,15 +9,15 @@ import views.leftsidebar.components.SidebarComponent;
 
 class ConnectionSetupComponent extends SidebarComponent {
 
-    public var onConnectPressed:Signal1<Connection> = new Signal1<Connection>();
+    public var onSyncPressed:Signal1<Connection> = new Signal1<Connection>();
 
     private var connection:Connection;
 
     private var ip:LabelledTextInput;
     private var port:LabelledTextInput;
-    private var connectButton:Button;
+    private var syncButton:Button;
 
-    public function new(?title:String, ?connection:Connection) {
+    public function new(?title:String, ?connection:Connection, ?hasSyncButton:Bool) {
         super(title);
 
         this.connection = connection;
@@ -30,14 +30,15 @@ class ConnectionSetupComponent extends SidebarComponent {
         port.setText(Std.string(connection.port));
         addChild(port);
 
-        connectButton = new Button();
-        connectButton.toggle = true;
-        connectButton.text = "Connect";
-        connectButton.horizontalAlign = "center";
-        addChild(connectButton);
+        if(hasSyncButton) {
+            syncButton = new Button();
+            syncButton.text = "Sync";
+            syncButton.horizontalAlign = "center";
+            addChild(syncButton);
 
-        connectButton.onClick = function(e:UIEvent) {
-            onConnectPressed.dispatch(connection);
+            syncButton.onClick = function(e:UIEvent) {
+                onSyncPressed.dispatch(connection);
+            }
         }
 
         ip.addEventListener(UIEvent.CHANGE, update);

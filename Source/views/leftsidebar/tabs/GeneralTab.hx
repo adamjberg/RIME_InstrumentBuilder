@@ -11,8 +11,7 @@ import views.leftsidebar.components.SidebarComponent;
 class GeneralTab extends Tab {
 
     public var onDimensionsChanged:Signal2<Int, Int>;
-    public var onClientConnectPressed:Signal1<Connection> = new Signal1<Connection>();
-    public var onServerConnectPressed:Signal1<Connection> = new Signal1<Connection>();
+    public var onClientSyncPressed:Signal1<Connection> = new Signal1<Connection>();
 
     private var layoutComponent:LayoutSidebarComponent;
     private var clientConnectionSetup:ConnectionSetupComponent;
@@ -25,13 +24,12 @@ class GeneralTab extends Tab {
         onDimensionsChanged = layoutComponent.onDimensionsChanged;
         addComponent(layoutComponent);
 
-        clientConnectionSetup = new ConnectionSetupComponent("Client Connection Setup", clientConnection);
+        clientConnectionSetup = new ConnectionSetupComponent("Client Connection Setup", clientConnection, true);
         addComponent(clientConnectionSetup);
 
-        serverConnectionSetup = new ConnectionSetupComponent("Server Connection Setup", serverConnection);
+        serverConnectionSetup = new ConnectionSetupComponent("Server Connection Setup", serverConnection, false);
         addComponent(serverConnectionSetup);
 
-        clientConnectionSetup.onConnectPressed.add(onClientConnectPressed.dispatch);
-        serverConnectionSetup.onConnectPressed.add(onServerConnectPressed.dispatch);
+        clientConnectionSetup.onSyncPressed.add(onClientSyncPressed.dispatch);
     }
 }

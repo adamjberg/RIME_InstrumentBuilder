@@ -145,8 +145,7 @@ class App extends HBox {
 #end
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
-        leftSideBar.onClientConnectPressed.add(connectClient);
-        leftSideBar.onServerConnectPressed.add(connectServer);
+        leftSideBar.onClientSyncPressed.add(syncClient);
         addChild(leftSideBar);
 
         instrumentBuilder = new InstrumentBuilder(controlProperties);
@@ -184,12 +183,8 @@ class App extends HBox {
         }
     }
 
-    private function connectClient(connection:Connection) {
-        clientUdpServer.connect(connection);
-    }
-
-    private function connectServer(connection:Connection) {
-        serverUdpServer.connect(connection);
+    private function syncClient(connection:Connection) {
+        
     }
 
     private function getControl(addressPattern:String):Control {
