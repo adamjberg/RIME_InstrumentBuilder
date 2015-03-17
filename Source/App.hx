@@ -1,5 +1,6 @@
 package;
 
+import haxe.Json;
 import haxe.ui.toolkit.containers.HBox;
 import models.Command;
 import models.Connection;
@@ -25,8 +26,7 @@ class App extends HBox {
     public var sensors:Array<Sensor>;
     public var commands:Array<Command>;
 
-    public var clientUdpServer:UdpServer;
-    public var serverUdpServer:UdpServer;
+    public var server:UdpServer;
     public var leftSideBar:LeftSideBar;
     public var sensorSideBar:SensorSideBar;
     public var instrumentBuilder:InstrumentBuilder;
@@ -38,7 +38,7 @@ class App extends HBox {
         percentHeight = 100;
 
         layoutSettings = new LayoutSettings("layout1", 320, 480);
-        clientConnection = new Connection("128.189.201.204", 12000);
+        clientConnection = new Connection("127.0.0.1", 11000);
         serverConnection = new Connection("127.0.0.1", 13000);
 
         controlsMap = new Map<String, Control>();
@@ -134,15 +134,10 @@ class App extends HBox {
         controlsMap.set(props.addressPattern, control);
         controlProperties.push(props);
 
-#if !neko
-        clientUdpServer = new UdpServer(12000);
-        clientUdpServer.connect(clientConnection);
-        clientUdpServer.onOSCMessageReceived.add(oscMessageReceived);
-        serverUdpServer = new UdpServer(12001);
-        serverUdpServer.connect(serverConnection);
-        serverUdpServer.onOSCMessageReceived.add(oscMessageReceived);
+        server = new UdpServer(12000);
+        server.onOSCMessageReceived.add(oscMessageReceived);
         addEventListener(Event.ENTER_FRAME, onFrameEntered);
-#end
+
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
         leftSideBar.onClientSyncPressed.add(syncClient);
@@ -178,13 +173,22 @@ class App extends HBox {
                 } else {
                     message.addFloat(value);
                 }
-                serverUdpServer.send(message);
+                server.sendTo(message, serverConnection);
             }
         }
     }
 
     private function syncClient(connection:Connection) {
-        
+        var controlPropertiesArray:Array<Dynamic> = new Array<Dynamic>();
+        var controlProperties:ControlProperties;
+        for(control in controlsMap.iterator()) {
+            controlProperties = control.properties;
+            controlPropertiesArray.push(control.properties);
+        }
+        var controlPropertiesString:String = Json.stringify(controlPropertiesArray);
+        var syncMessage = new OscMessage("/sync");
+        syncMessage.addString(controlPropertiesString);
+        server.sendTo(syncMessage, clientConnection);
     }
 
     private function getControl(addressPattern:String):Control {
@@ -218,7 +222,6 @@ class App extends HBox {
     }
 
     private function onFrameEntered(e:Event) {
-        clientUdpServer.update();
-        serverUdpServer.update();
+        server.update();
     }
 }

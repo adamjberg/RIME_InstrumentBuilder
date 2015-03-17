@@ -16,23 +16,37 @@ class UdpServer {
     private var socket:UdpSocket;
 
     public function new (bindPort) {
+#if !neko
         socket = new UdpSocket();
         if(socket.create() == false || socket.bind(bindPort) == false)
         {
             trace("Failed To Create Socket");
         }
         socket.setNonBlocking(true);
+#else
+        trace("Not Supported on this Platform");
+#end
     }
 
-    public function connect(connection:Connection) {
+    public function sendTo(message:OscMessage, connection:Connection) {
+#if !neko
+        connect(connection);
+        send(message);
+#else
+        trace("Not Supported on this Platform");
+#end
+    }
+
+    private function connect(connection:Connection) {
         socket.connect(connection.ipAddress, connection.port);
     }
 
-    public function send(message:OscMessage) {
+    private function send(message:OscMessage) {
         socket.send(message.getBytes());
     }
 
     public function update() {
+#if !neko
         var b = Bytes.alloc(BUFF_SIZE);
         var ret:Int = socket.receive(b);
         if(ret > 0)
@@ -43,5 +57,6 @@ class UdpServer {
                 onOSCMessageReceived.dispatch(message);
             }
         }
+#end
     }
 }
