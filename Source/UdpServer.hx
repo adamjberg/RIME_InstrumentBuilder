@@ -1,7 +1,6 @@
 package;
 
 import models.Connection;
-import msignal.Signal.Signal1;
 
 import hxudp.UdpSocket;
 import haxe.io.Bytes;
@@ -10,8 +9,6 @@ import osc.OscMessage;
 
 class UdpServer {
     private static inline var BUFF_SIZE:Int = 65535;
-
-    public var onOSCMessageReceived:Signal1<OscMessage> = new Signal1<OscMessage>();
 
     private var socket:UdpSocket;
 
@@ -37,26 +34,24 @@ class UdpServer {
 #end
     }
 
+    public function receive():OscMessage {
+#if !neko
+        var b = Bytes.alloc(BUFF_SIZE);
+        var ret:Int = socket.receive(b);
+        if(ret > 0)
+        {
+            var message:OscMessage = OscMessage.fromBytes(b);
+                return message;
+        }
+#end
+        return null;
+    }
+
     private function connect(connection:Connection) {
         socket.connect(connection.ipAddress, connection.port);
     }
 
     private function send(message:OscMessage) {
         socket.send(message.getBytes());
-    }
-
-    public function update() {
-#if !neko
-        var b = Bytes.alloc(BUFF_SIZE);
-        var ret:Int = socket.receive(b);
-        if(ret > 0)
-        {
-            trace("RECEIVED");
-            var message:OscMessage = OscMessage.fromBytes(b);
-            if(message != null) {
-                onOSCMessageReceived.dispatch(message);
-            }
-        }
-#end
     }
 }

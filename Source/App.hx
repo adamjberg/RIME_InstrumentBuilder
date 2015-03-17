@@ -22,7 +22,6 @@ class App extends HBox {
     public var clientConnection:Connection;
     public var serverConnection:Connection;
     public var controlsMap:Map<String, Control>;
-    public var controlValues:Map<String, Float>;
     public var sensors:Array<Sensor>;
     public var commands:Array<Command>;
 
@@ -30,6 +29,8 @@ class App extends HBox {
     public var leftSideBar:LeftSideBar;
     public var sensorSideBar:SensorSideBar;
     public var instrumentBuilder:InstrumentBuilder;
+
+    public var listenerThread:UdpListenerThread;
 
     public function new() {
         super();
@@ -42,7 +43,6 @@ class App extends HBox {
         serverConnection = new Connection("127.0.0.1", 13000);
 
         controlsMap = new Map<String, Control>();
-        controlValues = new Map<String, Float>();
         sensors = [
             new Accelerometer(),
             new AmbientTemperature(),
@@ -135,8 +135,7 @@ class App extends HBox {
         controlProperties.push(props);
 
         server = new UdpServer(12000);
-        server.onOSCMessageReceived.add(oscMessageReceived);
-        addEventListener(Event.ENTER_FRAME, onFrameEntered);
+        listenerThread = new UdpListenerThread(server, controlsMap, serverConnection);
 
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
@@ -155,27 +154,6 @@ class App extends HBox {
         instrumentBuilder.onControlSelected.add(controlSelected);
         instrumentBuilder.onControlDeselected.add(controlDeselected);
         instrumentBuilder.onControlUpdated.add(controlUpdated);
-    }
-
-    private function oscMessageReceived(message:OscMessage) {
-        trace("Message Received " + message.addressPattern);
-        controlValues.set(message.addressPattern, message.arguments[0]);
-        var control:Control = controlsMap[message.addressPattern];
-        if(control != null) {
-            for(command in control.commands) {
-                var message:OscMessage = new OscMessage(command.addressPattern);
-                var value:Dynamic = command.values[0];
-                var valueString = Std.string(value);
-                if(controlValues.exists(valueString)) {
-                    message.addFloat(controlValues.get(valueString));
-                } else if(Std.is(value, String)){
-                    message.addString(value);
-                } else {
-                    message.addFloat(value);
-                }
-                server.sendTo(message, serverConnection);
-            }
-        }
     }
 
     private function syncClient(connection:Connection) {
@@ -219,9 +197,5 @@ class App extends HBox {
 
     private function controlPropertiesUpdated() {
         instrumentBuilder.updateCurrentControl();
-    }
-
-    private function onFrameEntered(e:Event) {
-        server.update();
     }
 }

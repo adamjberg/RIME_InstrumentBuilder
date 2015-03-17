@@ -23,6 +23,7 @@ class Control {
 
     public var properties:ControlProperties;
     public var commands:Array<Command>;
+    public var values:Array<Float>;
 
     public function new(?properties:ControlProperties, ?commands:Array<Command>) {
         if(properties != null) { 
@@ -39,5 +40,6 @@ class Control {
         if(this.commands.length == 0) {
             this.commands.push(new Command());
         }
+        values = new Array<Float>();
     }
 }
