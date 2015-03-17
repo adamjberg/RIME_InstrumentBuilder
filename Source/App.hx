@@ -135,7 +135,7 @@ class App extends HBox {
         controlProperties.push(props);
 
         server = new UdpServer(12000);
-        listenerThread = new UdpListenerThread(server, controlsMap, serverConnection);
+        listenerThread = new UdpListenerThread(server, controlsMap, serverConnection, sensors);
 
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);

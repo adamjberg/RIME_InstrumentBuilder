@@ -4,12 +4,17 @@ import haxe.ui.toolkit.containers.ListView;
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.core.renderers.ComponentItemRenderer;
 import models.sensors.Sensor;
+import openfl.events.Event;
+import openfl.events.TimerEvent;
+import openfl.utils.Timer;
 
 class SensorSideBar extends VBox {
 
     public var sensors:Array<Sensor>;
 
     public var sensorScrollList:ListView;
+
+    private var updateTimer:Timer;
 
     public function new(?sensors:Array<Sensor>) {
         super();
@@ -43,5 +48,24 @@ class SensorSideBar extends VBox {
         }
         
         addChild(sensorScrollList);
+        
+        updateTimer = new Timer(1000);
+        updateTimer.addEventListener(TimerEvent.TIMER, update);
+        updateTimer.start();
+    }
+
+    private function update(e:Event) {
+        sensorScrollList.dataSource.moveFirst();
+        for(sensor in sensors)
+        {
+            // Skip the name
+            sensorScrollList.dataSource.moveNext();
+
+            for(component in sensor.components) {
+                sensorScrollList.dataSource.get().text = component.name + ": " + Std.int(component.value * 1000) / 1000;
+                sensorScrollList.dataSource.moveNext();
+            }
+        }
+        sensorScrollList.invalidate();
     }
 }
