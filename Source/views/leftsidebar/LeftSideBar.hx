@@ -20,6 +20,8 @@ class LeftSideBar extends TabView {
     public var onDimensionsChanged:Signal2<Int, Int>;
     public var onPropertiesUpdated:Signal0 = new Signal0();
     public var onClientSyncPressed:Signal1<Connection> = new Signal1<Connection>();
+    public var onLoadPressed:Signal0 = new Signal0();
+    public var onSavePressed:Signal0 = new Signal0();
 
     private var generalTab:GeneralTab;
     private var controlTab:ControlTab;
@@ -34,6 +36,8 @@ class LeftSideBar extends TabView {
         percentHeight = 100;
 
         generalTab = new GeneralTab(layoutSettings, clientConnection, serverConnection);
+        generalTab.onLoadPressed.add(onLoadPressed.dispatch);
+        generalTab.onSavePressed.add(onSavePressed.dispatch);
 
         generalTab.onClientSyncPressed.add(onClientSyncPressed.dispatch);
 

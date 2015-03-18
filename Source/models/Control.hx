@@ -25,6 +25,12 @@ class Control {
     public var commands:Array<Command>;
     public var values:Array<Float>;
 
+    public static function fromDynamic(from:Dynamic):Control {
+        return new Control(
+            ControlProperties.fromDynamic(from.properties), from.commands
+        );
+    }
+
     public function new(?properties:ControlProperties, ?commands:Array<Command>) {
         if(properties != null) { 
             this.properties = properties;

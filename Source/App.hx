@@ -2,6 +2,8 @@ package;
 
 import haxe.Json;
 import haxe.ui.toolkit.containers.HBox;
+import haxe.ui.toolkit.core.PopupManager;
+import haxe.ui.toolkit.core.renderers.ItemRenderer;
 import models.Command;
 import models.Connection;
 import models.Control;
@@ -10,18 +12,21 @@ import models.LayoutSettings;
 import models.sensors.*;
 import openfl.events.Event;
 import osc.OscMessage;
+import sys.FileSystem;
+import sys.io.File;
 import views.builder.InstrumentBuilder;
 import views.leftsidebar.LeftSideBar;
 import views.sensorsidebar.SensorSideBar;
 
 class App extends HBox {
 
+    private static inline var SAVE_DIRECTORY:String = "layouts";
     private static var controlCount:Int = 1;
 
     public var layoutSettings:LayoutSettings;
     public var clientConnection:Connection;
     public var serverConnection:Connection;
-    public var controlsMap:Map<String, Control>;
+    public var controls:Array<Control>;
     public var sensors:Array<Sensor>;
     public var commands:Array<Command>;
 
@@ -38,11 +43,6 @@ class App extends HBox {
         percentWidth = 100;
         percentHeight = 100;
 
-        layoutSettings = new LayoutSettings("layout1", 320, 480);
-        clientConnection = new Connection("127.0.0.1", 11000);
-        serverConnection = new Connection("127.0.0.1", 13000);
-
-        controlsMap = new Map<String, Control>();
         sensors = [
             new Accelerometer(),
             new AmbientTemperature(),
@@ -56,93 +56,43 @@ class App extends HBox {
             new Pressure(),
             new Proximity()
         ];
-        commands = [
-            new Command("/test", ["success"]),
-            new Command("/test2", ["success2"]),
-            new Command("/test3", ["success"]),
-            new Command("/test4", ["success2"]),
-            new Command("/test5", ["success"]),
-            new Command("/test6", ["success2"]),
-        ];
-
-        var controlProperties:Array<ControlProperties> = new Array<ControlProperties>();
-
-        var props:ControlProperties = new ControlProperties();
-        var control:Control;
-        var sliderWidth:Int = 300;
-        var buttonWidth:Int = 300;
-        var buttonHeight:Int = 40;
-        
-        props.addressPattern = "/slider1";
-        props.type = Control.TYPE_HSLIDER;
-        props.x = 10;
-        props.y = 10;
-        props.width = sliderWidth;
-        control = new Control(props, [new Command("/x", ["/slider1"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
-
-        props = new ControlProperties();
-        props.addressPattern = "/slider2";
-        props.type = Control.TYPE_HSLIDER;
-        props.x = 10;
-        props.y = 50;
-        props.width = sliderWidth;
-        control = new Control(props, [new Command("/y", ["/slider2"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
-
-        props = new ControlProperties();
-        props.addressPattern = "/button1";
-        props.type = Control.TYPE_PUSHBUTTON;
-        props.x = 10;
-        props.y = 90;
-        props.width = buttonWidth;
-        props.height = buttonHeight;
-        control = new Control(props, [new Command("/visible", ["/button1"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
-
-        props = new ControlProperties();
-        props.addressPattern = "/button2";
-        props.type = Control.TYPE_PUSHBUTTON;
-        props.x = 10;
-        props.y = 140;
-        props.width = buttonWidth;
-        props.height = buttonHeight;
-        control = new Control(props, [new Command("/visible", ["/button2"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
-
-        props = new ControlProperties();
-        props.addressPattern = "/slider3";
-        props.type = Control.TYPE_HSLIDER;
-        props.x = 10;
-        props.y = 190;
-        props.width = sliderWidth;
-        control = new Control(props, [new Command("/width", ["/slider3"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
-
-        props = new ControlProperties();
-        props.addressPattern = "/slider4";
-        props.type = Control.TYPE_HSLIDER;
-        props.x = 10;
-        props.y = 230;
-        props.width = sliderWidth;
-        control = new Control(props, [new Command("/height", ["/slider4"])]);
-        controlsMap.set(props.addressPattern, control);
-        controlProperties.push(props);
 
         server = new UdpServer(12000);
-        listenerThread = new UdpListenerThread(server, controlsMap, serverConnection, sensors);
+        reloadUI();
+    }
+
+    private function reloadUI(?saveFileObj:Dynamic) {
+        removeAllChildren();
+        if(saveFileObj != null) {
+            controls = new Array<Control>();
+            for(c in cast(saveFileObj.controls, Array<Dynamic>)) {
+                controls.push(Control.fromDynamic(c));
+            }
+            trace("CONTROLS " + controls);
+            commands = new Array<Command>();
+            for(c in cast(saveFileObj.commands, Array<Dynamic>)) {
+                commands.push(Command.fromDynamic(c));
+            }
+            layoutSettings = LayoutSettings.fromDynamic(saveFileObj.layout);
+            clientConnection = Connection.fromDynamic(saveFileObj.clientConnection);
+            serverConnection = Connection.fromDynamic(saveFileObj.serverConnection);
+        } else {
+            controls = new Array<Control>();
+            commands = [];
+            layoutSettings = new LayoutSettings("layout1", 320, 480);
+            clientConnection = new Connection("127.0.0.1", 11000);
+            serverConnection = new Connection("127.0.0.1", 13000);
+        }
+        listenerThread = new UdpListenerThread(server, controls, serverConnection, sensors);
 
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
         leftSideBar.onClientSyncPressed.add(syncClient);
+        leftSideBar.onSavePressed.add(save);
+        leftSideBar.onLoadPressed.add(openLoadFilePopup);
         addChild(leftSideBar);
 
-        instrumentBuilder = new InstrumentBuilder(controlProperties);
+        instrumentBuilder = new InstrumentBuilder(controls);
         addChild(instrumentBuilder);
 
         sensorSideBar = new SensorSideBar(sensors);
@@ -156,10 +106,51 @@ class App extends HBox {
         instrumentBuilder.onControlUpdated.add(controlUpdated);
     }
 
+    private function openLoadFilePopup() {
+        FileSystem.createDirectory(SAVE_DIRECTORY);
+        var filenames:Array<String> = FileSystem.readDirectory(SAVE_DIRECTORY);
+        PopupManager.instance.showList(filenames, -1, "Select file to load", { buttons: PopupButton.CANCEL }, fileSelected);
+    }
+
+    private function fileSelected(selectedObject:Dynamic) {
+        if(selectedObject == null || Std.is(selectedObject, Int)) {
+        }
+        else if(selectedObject != null && Std.is(selectedObject, ItemRenderer)) {
+            var item:ItemRenderer = selectedObject;
+            loadFile(item.data.text);
+        }
+    }
+
+    private function loadFile(filename:String) {
+        var filenameWithDirectory:String = SAVE_DIRECTORY + "/" + filename;
+        if(FileSystem.exists(filenameWithDirectory)) {
+            var saveFileObj:Dynamic = Json.parse(File.getContent(filenameWithDirectory));
+            trace("LOADING " + saveFileObj);
+            reloadUI(saveFileObj);
+        }
+    }
+
+    private function save() {
+        var saveFileObj:Dynamic = {};
+        saveFileObj.layout = layoutSettings;
+        saveFileObj.controls = controls;
+        saveFileObj.commands = commands;
+        saveFileObj.clientConnection = clientConnection;
+        saveFileObj.serverConnection = serverConnection;
+        
+        var filename:String = layoutSettings.name + ".rime";
+        var filenameWithDirectory:String = SAVE_DIRECTORY + "/" + filename;
+        FileSystem.createDirectory(SAVE_DIRECTORY);
+        if(FileSystem.exists(filename)) {
+            FileSystem.deleteFile(filename);
+        }
+        File.saveContent(filenameWithDirectory, Json.stringify(saveFileObj));
+    }
+
     private function syncClient(connection:Connection) {
         var controlPropertiesArray:Array<Dynamic> = new Array<Dynamic>();
         var controlProperties:ControlProperties;
-        for(control in controlsMap.iterator()) {
+        for(control in controls) {
             controlProperties = control.properties;
             controlPropertiesArray.push(control.properties);
         }
@@ -170,7 +161,12 @@ class App extends HBox {
     }
 
     private function getControl(addressPattern:String):Control {
-        return controlsMap[addressPattern];
+        for( control in controls) {
+            if(control.properties.addressPattern == addressPattern) {
+                return control;
+            }
+        }
+        return null;
     }
 
     private function generateAddressPattern():String {
@@ -180,7 +176,7 @@ class App extends HBox {
     private function controlAdded(controlProperties:ControlProperties) {
         controlProperties.addressPattern = generateAddressPattern();
         var control:Control = new Control(controlProperties);
-        controlsMap.set(controlProperties.addressPattern, control); 
+        controls.push(control); 
     }
 
     private function controlSelected(addressPattern:String) {

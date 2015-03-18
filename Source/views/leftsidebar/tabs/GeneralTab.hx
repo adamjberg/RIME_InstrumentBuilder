@@ -2,6 +2,7 @@ package views.leftsidebar.tabs;
 
 import models.Connection;
 import models.LayoutSettings;
+import msignal.Signal.Signal0;
 import msignal.Signal.Signal1;
 import msignal.Signal.Signal2;
 import views.leftsidebar.components.ConnectionSetupComponent;
@@ -10,8 +11,10 @@ import views.leftsidebar.components.SidebarComponent;
 
 class GeneralTab extends Tab {
 
-    public var onDimensionsChanged:Signal2<Int, Int>;
+    public var onDimensionsChanged:Signal2<Int, Int> = new Signal2<Int, Int>();
     public var onClientSyncPressed:Signal1<Connection> = new Signal1<Connection>();
+    public var onLoadPressed:Signal0 = new Signal0();
+    public var onSavePressed:Signal0 = new Signal0();
 
     private var layoutComponent:LayoutSidebarComponent;
     private var clientConnectionSetup:ConnectionSetupComponent;
@@ -21,7 +24,9 @@ class GeneralTab extends Tab {
         super("General");
 
         layoutComponent = new LayoutSidebarComponent(layoutSettings);
-        onDimensionsChanged = layoutComponent.onDimensionsChanged;
+        layoutComponent.onDimensionsChanged.add(onDimensionsChanged.dispatch);
+        layoutComponent.onSavePressed.add(onSavePressed.dispatch);
+        layoutComponent.onLoadPressed.add(onLoadPressed.dispatch);
         addComponent(layoutComponent);
 
         clientConnectionSetup = new ConnectionSetupComponent("Client Connection Setup", clientConnection, true);

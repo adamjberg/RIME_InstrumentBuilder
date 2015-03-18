@@ -21,7 +21,7 @@ class InstrumentBuilder extends VBox {
     public var onControlDeselected:Signal1<String> = new Signal1<String>();
     public var onControlUpdated:Signal1<String> = new Signal1<String>();
 
-    private var controlProperties:Array<ControlProperties>;
+    private var controls:Array<Control>;
 
     private var instrument:Instrument;
     private var selectedControl:IControl;
@@ -30,10 +30,10 @@ class InstrumentBuilder extends VBox {
     private var controlMouseX:Int = 0;
     private var controlMouseY:Int = 0;
 
-    public function new(?controlProperties:Array<ControlProperties>) {
+    public function new(?controls:Array<Control>) {
         super();
 
-        this.controlProperties = controlProperties;
+        this.controls = controls;
 
         percentHeight = percentWidth = 100;
         style.backgroundColor = 0xAAAAAA;
@@ -42,12 +42,12 @@ class InstrumentBuilder extends VBox {
         spacer.percentHeight = 50;
         addChild(spacer);
 
-        instrument = new Instrument(controlProperties);
+        instrument = new Instrument();
         instrument.horizontalAlign = "center";
         addChild(instrument);
 
-        for(control in controlProperties) {
-            addControlToBuilder(control);
+        for(control in controls) {
+            addControlToBuilder(control.properties);
         }
 
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);

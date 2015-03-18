@@ -14,13 +14,13 @@ class UdpListenerThread {
     public var listenerThread:Thread;
 
     private var server:UdpServer;
-    private var controlsMap:Map<String, Control>;
+    private var controls:Array<Control>;
     private var serverConnection:Connection;
     private var sensors:Array<Sensor>;
 
-    public function new(server:UdpServer, controlsMap:Map<String, Control>, serverConnection:Connection, sensors:Array<Sensor>) {
+    public function new(server:UdpServer, controls:Array<Control>, serverConnection:Connection, sensors:Array<Sensor>) {
         this.server = server;
-        this.controlsMap = controlsMap;
+        this.controls = controls;
         this.serverConnection = serverConnection;
         this.sensors = sensors;
         listenerThread = Thread.create(listen);
@@ -67,8 +67,17 @@ class UdpListenerThread {
         }
     }
 
+    private function getControlForAddressPattern(addressPattern:String) {
+        for(control in controls) {
+            if(control.properties.addressPattern == addressPattern) {
+                return control;
+            }
+        }
+        return null;
+    }
+
     private function handleControlOscMessage(receivedMessage:OscMessage) {
-        var control:Control = controlsMap[receivedMessage.addressPattern];
+        var control:Control = getControlForAddressPattern(receivedMessage.addressPattern);
         if(control == null) {
             return;
         }
@@ -76,10 +85,11 @@ class UdpListenerThread {
             var messageToSend:OscMessage = new OscMessage(command.addressPattern);
             var commandValue:Dynamic = command.values[0];
             var valueString = Std.string(commandValue);
-            if(controlsMap.exists(valueString)) {
+            var foundControl:Control = getControlForAddressPattern(valueString);
+            if(foundControl != null) {
                 // TODO: XY Pad will have 2 values
                 var controlValue:Float = receivedMessage.arguments[0];
-                controlsMap.get(valueString).values[0] = controlValue;
+                foundControl.values[0] = controlValue;
                 messageToSend.addFloat(controlValue);
             } else if(Std.is(commandValue, String)){
                 messageToSend.addString(commandValue);

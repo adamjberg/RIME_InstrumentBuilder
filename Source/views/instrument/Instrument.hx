@@ -8,21 +8,9 @@ import views.instrument.controls.IControl;
 
 class Instrument extends Absolute {
 
-    public var controlProperties:Array<ControlProperties>;
-
-    public function new(?controlProperties:Array<ControlProperties>) {
+    public function new() {
         super();
-
-        this.controlProperties = controlProperties;
-
         style.backgroundColor = 0xFFFFFF;
-    }
-
-    public function update() {
-        removeAllChildren();
-        for(properties in controlProperties) {
-            addControlFromProperties(properties);
-        }
     }
 
     public function addControlFromProperties(properties:ControlProperties):IControl {
