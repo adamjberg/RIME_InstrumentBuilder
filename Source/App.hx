@@ -90,15 +90,24 @@ class App extends HBox {
         leftSideBar.onClientSyncPressed.add(syncClient);
         leftSideBar.onSavePressed.add(save);
         leftSideBar.onLoadPressed.add(openLoadFilePopup);
+        leftSideBar.onDeleteControlPressed.add(deleteSelectedControl);
         addChild(leftSideBar);
 
-        instrumentBuilder = new InstrumentBuilder(controls);
-        addChild(instrumentBuilder);
+        refreshInstrumentBuilder();
 
         sensorSideBar = new SensorSideBar(sensors);
         addChild(sensorSideBar);
 
         leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
+
+        
+    }
+
+    private function refreshInstrumentBuilder() {
+        removeChild(instrumentBuilder);
+        instrumentBuilder = new InstrumentBuilder(controls);
+
+        addChildAt(instrumentBuilder, 1);
 
         instrumentBuilder.onControlAdded.add(controlAdded);
         instrumentBuilder.onControlSelected.add(controlSelected);
@@ -158,6 +167,17 @@ class App extends HBox {
         var syncMessage = new OscMessage("/sync");
         syncMessage.addString(controlPropertiesString);
         server.sendTo(syncMessage, clientConnection);
+    }
+
+    private function deleteSelectedControl() {
+        var properties:ControlProperties = instrumentBuilder.selectedControl.properties;
+        for(control in controls) {
+            if(control.properties == properties) {
+                controls.remove(control);
+                break;
+            }
+        }
+        refreshInstrumentBuilder();
     }
 
     private function getControl(addressPattern:String):Control {

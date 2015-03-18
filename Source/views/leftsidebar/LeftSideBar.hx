@@ -22,6 +22,7 @@ class LeftSideBar extends TabView {
     public var onClientSyncPressed:Signal1<Connection> = new Signal1<Connection>();
     public var onLoadPressed:Signal0 = new Signal0();
     public var onSavePressed:Signal0 = new Signal0();
+    public var onDeleteControlPressed:Signal0 = new Signal0();
 
     private var generalTab:GeneralTab;
     private var controlTab:ControlTab;
@@ -52,6 +53,7 @@ class LeftSideBar extends TabView {
         if(controlTab == null) {
             controlTab = new ControlTab(control);
             controlTab.onPropertiesUpdated.add(onPropertiesUpdated.dispatch);
+            controlTab.onDeletePressed.add(onDeleteControlPressed.dispatch);
             addChild(controlTab); 
         }
         controlTab.setControl(control);

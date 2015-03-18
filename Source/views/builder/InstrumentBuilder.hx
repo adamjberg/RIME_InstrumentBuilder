@@ -24,7 +24,7 @@ class InstrumentBuilder extends VBox {
     private var controls:Array<Control>;
 
     private var instrument:Instrument;
-    private var selectedControl:IControl;
+    public var selectedControl:IControl;
     private var mouseX:Int = 0;
     private var mouseY:Int = 0;
     private var controlMouseX:Int = 0;
