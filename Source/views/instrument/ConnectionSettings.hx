@@ -12,8 +12,6 @@ class ConnectionSettings extends VBox {
     public function new(?connection:Connection) {
         super();
 
-        trace(connection);
-
         percentWidth = 100;
 
         ipInput = new LabelledTextInput("IP:");
