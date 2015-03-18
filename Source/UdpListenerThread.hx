@@ -1,3 +1,4 @@
+import haxe.Json;
 import models.Connection;
 import models.Control;
 import models.sensors.Sensor;
@@ -17,12 +18,14 @@ class UdpListenerThread {
     private var controls:Array<Control>;
     private var serverConnection:Connection;
     private var sensors:Array<Sensor>;
+    private var uiThread:Thread;
 
-    public function new(server:UdpServer, controls:Array<Control>, serverConnection:Connection, sensors:Array<Sensor>) {
+    public function new(server:UdpServer, ?controls:Array<Control>, ?serverConnection:Connection, ?sensors:Array<Sensor>) {
         this.server = server;
         this.controls = controls;
         this.serverConnection = serverConnection;
         this.sensors = sensors;
+        uiThread = Thread.current();
         listenerThread = Thread.create(listen);
     }
 
@@ -51,6 +54,8 @@ class UdpListenerThread {
     private function handleOscMessage(message:OscMessage) {
         if(message.addressPattern == "/sensors") {
             handleSensorOscMessage(message); 
+        } else if(message.addressPattern == "/sync") {
+            handleSyncMessage(message);
         } else {
             handleControlOscMessage(message);
         }
@@ -65,6 +70,11 @@ class UdpListenerThread {
                 }
             }
         }
+    }
+
+    private function handleSyncMessage(message:OscMessage) {
+        var controlsObj:Array<Dynamic> = Json.parse(message.arguments[0]);
+        uiThread.sendMessage(controlsObj);
     }
 
     private function getControlForAddressPattern(addressPattern:String) {
