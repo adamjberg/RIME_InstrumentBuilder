@@ -18,7 +18,11 @@ class Main extends Sprite {
         Toolkit.setTransitionForClass(Popup, "none");
         Toolkit.setTransitionForClass(Stack, "none");
         Toolkit.openFullscreen(function(root:Root) {
-            root.addChild(new App());
+            #if mobile
+                root.addChild(new MobileApp());
+            #else
+                root.addChild(new App());
+            #end
         });
 	}
 }
