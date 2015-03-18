@@ -78,11 +78,15 @@ class InstrumentBuilder extends VBox {
             controlNames.sort(function(a,b) {
                 return Reflect.compare(a.toLowerCase(), b.toLowerCase());
             });
-            PopupManager.instance.showList(controlNames, -1, "Select a Control", {}, controlSelected);
+            PopupManager.instance.showList(controlNames, -1, "Select a Control", {buttons:PopupButton.CANCEL}, controlSelected);
         }
     }
 
-    private function controlSelected(selectedItem:ItemRenderer) {
+    private function controlSelected(value:Dynamic) {
+        if(value == null || Std.is(value, Int)) {
+            return;
+        }
+        var selectedItem:ItemRenderer = value;
         var selectedControlName:String = selectedItem.data.text;
         var properties:ControlProperties = new ControlProperties();
         properties.x = mouseX;
