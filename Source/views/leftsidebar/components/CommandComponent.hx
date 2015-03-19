@@ -16,7 +16,7 @@ class CommandComponent extends SidebarComponent {
 
     public var onDeleteButtonPressed:Signal1<CommandComponent> = new Signal1<CommandComponent>();
 
-    private var command:Command;
+    public var command:Command;
 
     private var titleHBox:HBox;
 

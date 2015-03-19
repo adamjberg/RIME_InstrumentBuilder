@@ -21,7 +21,7 @@ class ControlPropertiesComponent extends SidebarComponent {
     private var widthInput:LabelledTextInput;
     private var heightInput:LabelledTextInput;
 
-    public function new() {
+    public function new(?properties:ControlProperties) {
         super(TITLE);
 
         var xyHBox:HBox = new HBox();
@@ -49,10 +49,15 @@ class ControlPropertiesComponent extends SidebarComponent {
 
         addChild(xyHBox);
         addChild(widthHeightHBox);
+        setControlProperties(properties);
     }
 
     public function setControlProperties(properties:ControlProperties) {
         this.properties = properties;
+        update();
+    }
+
+    public function update() {
         xInput.setText(Std.string(properties.x));
         yInput.setText(Std.string(properties.y));
         widthInput.setText(Std.string(properties.width));

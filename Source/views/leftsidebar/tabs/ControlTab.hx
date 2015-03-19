@@ -24,7 +24,7 @@ class ControlTab extends Tab {
 
         this.control = control;
 
-        controlProperties = new ControlPropertiesComponent();
+        controlProperties = new ControlPropertiesComponent(control.properties);
         controlProperties.onPropertiesUpdated.add(onPropertiesUpdated.dispatch);
         addComponent(controlProperties);
         oscProperties = new OscPropertiesComponent();
@@ -36,7 +36,11 @@ class ControlTab extends Tab {
         deleteButton.onClick = function(e:UIEvent) {
             onDeletePressed.dispatch();
         }
-        addChild(deleteButton);
+        vBox.addChild(deleteButton);
+    }
+
+    public function update() {
+        controlProperties.update();
     }
 
     public function setControl(control:Control) {

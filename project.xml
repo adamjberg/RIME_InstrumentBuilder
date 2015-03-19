@@ -3,6 +3,7 @@
 	
 	<meta title="InstrumentBuilder" package="com.sample.instrumentbuilder" version="1.0.0" company="Company Name" />
 	<app main="Main" path="Export" file="InstrumentBuilder" />
+	<window width="1000" height="800" if="desktop"/>
 	<window orientation="portrait" />
 
 	<android permission="android.permission.INTERNET"/>
