@@ -10,6 +10,7 @@ import openfl.events.TimerEvent;
 import openfl.utils.Timer;
 import osc.OscMessage;
 import views.instrument.ConnectionSettings;
+import views.instrument.controls.IControl;
 import views.instrument.HeaderBar;
 import views.instrument.Instrument;
 
@@ -34,7 +35,7 @@ class MobileApp extends VBox {
         percentWidth = 100;
         percentHeight = 100;
 
-        serverConnection = new Connection("206.87.115.168", 12000);
+        serverConnection = new Connection("127.0.0.1", 12000);
         server = new UdpServer(11000);
 
         headerBar = new HeaderBar();
@@ -44,11 +45,32 @@ class MobileApp extends VBox {
         instrument = new Instrument();
         addChild(instrument);
 
-        listenerThread = new UdpListenerThread(server);
+        var props:ControlProperties = new ControlProperties();
+        props.addressPattern = "/button1";
+        props.type = models.Control.TYPE_PUSHBUTTON;
+        instrument.addControlFromProperties(props);
 
-        var timer = new Timer(1000);
-        timer.addEventListener(TimerEvent.TIMER, testSendOsc);
-        timer.start();
+        props = new ControlProperties();
+        props.addressPattern = "/button2";
+        props.type = models.Control.TYPE_TOGGLE;
+        props.x = 100;
+        instrument.addControlFromProperties(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/button3";
+        props.type = models.Control.TYPE_HSLIDER;
+        props.x = 200;
+        instrument.addControlFromProperties(props);
+
+        props = new ControlProperties();
+        props.addressPattern = "/button4";
+        props.type = models.Control.TYPE_VSLIDER;
+        props.x = 300;
+        instrument.addControlFromProperties(props);
+
+        instrument.onControlValueChanged.add(sendControlValue);
+
+        listenerThread = new UdpListenerThread(server);
 
         addEventListener(Event.ENTER_FRAME, enterFrame);
     }
@@ -68,12 +90,15 @@ class MobileApp extends VBox {
         }
     }
 
-    private function testSendOsc(e:TimerEvent) {
-        var message:OscMessage = new OscMessage("/sensors");
-        for(i in 0...23) {
-            message.addFloat(Math.random());
-        }
-        server.sendTo(message, serverConnection);
+    private function sendControlValue(control:IControl) {
+        var properties:ControlProperties = control.properties;
+        var message:OscMessage = new OscMessage(properties.addressPattern);
+        message.addFloat(control.getValue());
+        sendMessage(message);
+    }
+
+    private function sendMessage(msg:OscMessage) {
+        server.sendTo(msg, serverConnection);
     }
 
     private function openConnectionSettings() {
