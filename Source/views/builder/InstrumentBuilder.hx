@@ -35,7 +35,8 @@ class InstrumentBuilder extends VBox {
 
         this.controls = controls;
 
-        percentHeight = percentWidth = 100;
+        percentWidth = 50;
+        percentHeight = 100;
         style.backgroundColor = 0xAAAAAA;
 
         var spacer:Spacer = new Spacer();
