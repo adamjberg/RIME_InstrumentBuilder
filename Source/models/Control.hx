@@ -6,6 +6,7 @@ import views.instrument.controls.HSlider;
 import views.instrument.controls.PushButton;
 import views.instrument.controls.ToggleButton;
 import views.instrument.controls.VSlider;
+import views.instrument.controls.XYPad;
 
 class Control {
 
@@ -13,12 +14,14 @@ class Control {
     public static inline var TYPE_TOGGLE:String = "Toggle";
     public static inline var TYPE_VSLIDER:String = "SliderV";
     public static inline var TYPE_HSLIDER:String = "SliderH";
+    public static inline var TYPE_XYPAD:String = "XY Pad";
 
     public static var CONTROL_CLASSES:Map<String, Dynamic> = [
         TYPE_PUSHBUTTON => PushButton,
         TYPE_TOGGLE => ToggleButton,
         TYPE_VSLIDER => VSlider,
-        TYPE_HSLIDER => HSlider
+        TYPE_HSLIDER => HSlider,
+        TYPE_XYPAD => XYPad
     ];
 
     public var properties:ControlProperties;
