@@ -45,16 +45,11 @@ class App extends HBox {
 
         sensors = [
             new Accelerometer(),
-            new AmbientTemperature(),
-            new Gravity(),
-            new Gyroscope(),
-            new Humidity(),
-            new Light(),
             new LinearAccelerometer(),
-            new Magnetic(),
             new Orientation(),
-            new Pressure(),
-            new Proximity()
+            new Gyroscope(),
+            new Gravity(),
+            new Gyroscope()
         ];
 
         server = new UdpServer(12000);
@@ -99,8 +94,6 @@ class App extends HBox {
         addChild(sensorSideBar);
 
         leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
-
-        
     }
 
     private function refreshInstrumentBuilder() {
@@ -164,9 +157,12 @@ class App extends HBox {
             controlPropertiesArray.push(control.properties);
         }
         var controlPropertiesString:String = Json.stringify(controlPropertiesArray);
+        trace("SEND " + controlPropertiesString);
+        trace("TO " + clientConnection.ipAddress);
         var syncMessage = new OscMessage("/sync");
         syncMessage.addString(controlPropertiesString);
         server.sendTo(syncMessage, clientConnection);
+        trace(clientConnection);
     }
 
     private function deleteSelectedControl() {

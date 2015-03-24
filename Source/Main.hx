@@ -20,7 +20,7 @@ class Main extends Sprite {
         Toolkit.setTransitionForClass(Popup, "none");
         Toolkit.setTransitionForClass(Stack, "none");
         Toolkit.openFullscreen(function(root:Root) {
-            #if true
+            #if false
                 PopupManager.instance.defaultWidth = Math.round((Client.instance.windowWidth * 0.9) / Toolkit.scaleFactor);
                 root.addChild(new MobileApp());
             #else

@@ -20,9 +20,13 @@ class ControlPropertiesComponent extends SidebarComponent {
     private var yInput:LabelledTextInput;
     private var widthInput:LabelledTextInput;
     private var heightInput:LabelledTextInput;
+    private var labelInput:LabelledTextInput;
 
     public function new(?properties:ControlProperties) {
         super(TITLE);
+
+        labelInput = new LabelledTextInput("Name");
+        addChild(labelInput);
 
         var xyHBox:HBox = new HBox();
         xyHBox.percentWidth = 100;
@@ -42,6 +46,7 @@ class ControlPropertiesComponent extends SidebarComponent {
         widthHeightHBox.addChild(widthInput);
         widthHeightHBox.addChild(heightInput);
 
+        labelInput.addEventListener(UIEvent.CHANGE, updateControl);
         xInput.addEventListener(UIEvent.CHANGE, updateControl);
         yInput.addEventListener(UIEvent.CHANGE, updateControl);
         widthInput.addEventListener(UIEvent.CHANGE, updateControl);
@@ -58,6 +63,7 @@ class ControlPropertiesComponent extends SidebarComponent {
     }
 
     public function update() {
+        labelInput.setText(properties.title);
         xInput.setText(Std.string(properties.x));
         yInput.setText(Std.string(properties.y));
         widthInput.setText(Std.string(properties.width));
@@ -65,11 +71,13 @@ class ControlPropertiesComponent extends SidebarComponent {
     }
 
     private function updateControl(e:UIEvent) {
+        var title:String = labelInput.getText();
         var x:Dynamic = Std.parseInt(xInput.getText());
         var y:Dynamic = Std.parseInt(yInput.getText());
         var width:Dynamic = Std.parseInt(widthInput.getText());
         var height:Dynamic = Std.parseInt(heightInput.getText());
 
+        properties.title = title;
         if(x != null) {
             properties.x = x;
         }

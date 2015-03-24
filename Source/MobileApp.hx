@@ -8,6 +8,7 @@ import models.ControlProperties;
 import openfl.events.Event;
 import openfl.events.TimerEvent;
 import openfl.utils.Timer;
+import org.haxe.extension.Sensors;
 import osc.OscMessage;
 import views.instrument.ConnectionSettings;
 import views.instrument.controls.IControl;
@@ -88,6 +89,29 @@ class MobileApp extends VBox {
 
             addChild(instrument);
         }
+        
+        var sensorsMessage = new OscMessage("/sensors");
+        var sensorArrays:Array<Array<Float>> = new Array<Array<Float>>();
+        var linAccel:Array<Float> = Sensors.getLnaccel();
+        var accel:Array<Float> = Sensors.getAccel();
+        var orientation:Array<Float> = Sensors.getOrient();
+        var gyro:Array<Float> = Sensors.getGyro();
+        var gravity:Array<Float> = Sensors.getGravity();
+        var rotation:Array<Float> = Sensors.getRotvect();
+        
+        sensorArrays.push(linAccel);
+        sensorArrays.push(accel);
+        sensorArrays.push(orientation);
+        sensorArrays.push(gyro);
+        sensorArrays.push(gravity);
+        sensorArrays.push(rotation);
+
+        for(sensorArray in sensorArrays) {
+            for(val in sensorArray) {
+                sensorsMessage.addFloat(val);
+            }
+        }
+        sendMessage(sensorsMessage);
     }
 
     private function sendControlValue(control:IControl) {

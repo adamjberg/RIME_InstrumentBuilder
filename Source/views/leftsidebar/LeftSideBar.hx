@@ -33,7 +33,7 @@ class LeftSideBar extends TabView {
     public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection, ?commands:Array<Command>) {
         super();
 
-        width = 250;
+        width = 400;
         percentHeight = 100;
 
         generalTab = new GeneralTab(layoutSettings, clientConnection, serverConnection);

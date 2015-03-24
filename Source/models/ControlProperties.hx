@@ -7,6 +7,7 @@ class ControlProperties {
     public var height:Int = 0;
     public var type:String = "";
     public var addressPattern = "/";
+    public var title = "";
     public var fromValue:Float = 0;
     public var toValue:Float = 1;
 
@@ -17,9 +18,10 @@ class ControlProperties {
         to.width = from.width;
         to.height = from.height;
         to.type = from.type;
-        to.addressPattern = from.type;
+        to.addressPattern = from.addressPattern;
         to.fromValue = from.fromValue;
         to.toValue = from.toValue;
+        to.title = from.title;
         return to;
     }
 }

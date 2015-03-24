@@ -22,7 +22,7 @@ class SensorSideBar extends VBox {
         this.sensors = sensors;
         this.style.spacing = 0;
 
-        width = 250;
+        width = 400;
         percentHeight = 100;
 
         sensorScrollList = new ListView();
@@ -49,7 +49,7 @@ class SensorSideBar extends VBox {
         
         addChild(sensorScrollList);
         
-        updateTimer = new Timer(1000);
+        updateTimer = new Timer(250);
         updateTimer.addEventListener(TimerEvent.TIMER, update);
         updateTimer.start();
     }
