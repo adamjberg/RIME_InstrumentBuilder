@@ -181,7 +181,7 @@ class App extends HBox {
     }
 
     private function generateAddressPattern():String {
-        return "control" + controlCount;
+        return "/control" + controlCount++;
     }
 
     private function controlAdded(controlProperties:ControlProperties) {
