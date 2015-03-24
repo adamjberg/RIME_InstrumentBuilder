@@ -54,7 +54,6 @@ class InstrumentBuilder extends VBox {
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
         addEventListener(UIEvent.MOUSE_UP, mouseUp);
         instrument.addEventListener(MouseEvent.MOUSE_DOWN, instrumentPressed);
-        updateDimensions(320, 480);
     }
 
     public function updateDimensions(width, height) {

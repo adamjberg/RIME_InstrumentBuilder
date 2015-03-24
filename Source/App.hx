@@ -63,7 +63,6 @@ class App extends HBox {
             for(c in cast(saveFileObj.controls, Array<Dynamic>)) {
                 controls.push(Control.fromDynamic(c));
             }
-            trace("CONTROLS " + controls);
             commands = new Array<Command>();
             for(c in cast(saveFileObj.commands, Array<Dynamic>)) {
                 commands.push(Command.fromDynamic(c));
@@ -92,13 +91,12 @@ class App extends HBox {
 
         sensorSideBar = new SensorSideBar(sensors);
         addChild(sensorSideBar);
-
-        leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
     }
 
     private function refreshInstrumentBuilder() {
         removeChild(instrumentBuilder);
         instrumentBuilder = new InstrumentBuilder(controls);
+        instrumentBuilder.updateDimensions(layoutSettings.width, layoutSettings.height);
 
         addChildAt(instrumentBuilder, 1);
 
@@ -106,6 +104,7 @@ class App extends HBox {
         instrumentBuilder.onControlSelected.add(controlSelected);
         instrumentBuilder.onControlDeselected.add(controlDeselected);
         instrumentBuilder.onControlUpdated.add(controlUpdated);
+        leftSideBar.onDimensionsChanged.add(instrumentBuilder.updateDimensions);
     }
 
     private function openLoadFilePopup() {
@@ -127,7 +126,6 @@ class App extends HBox {
         var filenameWithDirectory:String = SAVE_DIRECTORY + "/" + filename;
         if(FileSystem.exists(filenameWithDirectory)) {
             var saveFileObj:Dynamic = Json.parse(File.getContent(filenameWithDirectory));
-            trace("LOADING " + saveFileObj);
             reloadUI(saveFileObj);
         }
     }
@@ -157,12 +155,9 @@ class App extends HBox {
             controlPropertiesArray.push(control.properties);
         }
         var controlPropertiesString:String = Json.stringify(controlPropertiesArray);
-        trace("SEND " + controlPropertiesString);
-        trace("TO " + clientConnection.ipAddress);
         var syncMessage = new OscMessage("/sync");
         syncMessage.addString(controlPropertiesString);
         server.sendTo(syncMessage, clientConnection);
-        trace(clientConnection);
     }
 
     private function deleteSelectedControl() {
