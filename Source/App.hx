@@ -25,7 +25,6 @@ class App extends HBox {
 
     public var layoutSettings:LayoutSettings;
     public var clientConnection:Connection;
-    public var serverConnection:Connection;
     public var controls:Array<Control>;
     public var sensors:Array<Sensor>;
     public var commands:Array<Command>;
@@ -69,17 +68,15 @@ class App extends HBox {
             }
             layoutSettings = LayoutSettings.fromDynamic(saveFileObj.layout);
             clientConnection = Connection.fromDynamic(saveFileObj.clientConnection);
-            serverConnection = Connection.fromDynamic(saveFileObj.serverConnection);
         } else {
             controls = new Array<Control>();
             commands = [];
             layoutSettings = new LayoutSettings("layout1", 320, 480);
             clientConnection = new Connection("127.0.0.1", 11000);
-            serverConnection = new Connection("127.0.0.1", 13000);
         }
-        listenerThread = new UdpListenerThread(server, controls, serverConnection, sensors);
+        listenerThread = new UdpListenerThread(server, controls, sensors);
 
-        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, serverConnection, commands);
+        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, commands);
         leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
         leftSideBar.onClientSyncPressed.add(syncClient);
         leftSideBar.onSavePressed.add(save);
@@ -136,7 +133,6 @@ class App extends HBox {
         saveFileObj.controls = controls;
         saveFileObj.commands = commands;
         saveFileObj.clientConnection = clientConnection;
-        saveFileObj.serverConnection = serverConnection;
         
         var filename:String = layoutSettings.name + ".rime";
         var filenameWithDirectory:String = SAVE_DIRECTORY + "/" + filename;

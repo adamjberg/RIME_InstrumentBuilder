@@ -18,9 +18,8 @@ class GeneralTab extends Tab {
 
     private var layoutComponent:LayoutSidebarComponent;
     private var clientConnectionSetup:ConnectionSetupComponent;
-    private var serverConnectionSetup:ConnectionSetupComponent;
 
-    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection) {
+    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection) {
         super("General");
 
         layoutComponent = new LayoutSidebarComponent(layoutSettings);
@@ -29,11 +28,8 @@ class GeneralTab extends Tab {
         layoutComponent.onLoadPressed.add(onLoadPressed.dispatch);
         addComponent(layoutComponent);
 
-        clientConnectionSetup = new ConnectionSetupComponent("Client Connection Setup", clientConnection, true);
+        clientConnectionSetup = new ConnectionSetupComponent("Device Connection Setup", clientConnection, true);
         addComponent(clientConnectionSetup);
-
-        serverConnectionSetup = new ConnectionSetupComponent("Server Connection Setup", serverConnection, false);
-        addComponent(serverConnectionSetup);
 
         clientConnectionSetup.onSyncPressed.add(onClientSyncPressed.dispatch);
     }

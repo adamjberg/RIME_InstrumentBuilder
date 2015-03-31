@@ -30,13 +30,13 @@ class LeftSideBar extends TabView {
 
     private var sizeLabel:Text;
 
-    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?serverConnection:Connection, ?commands:Array<Command>) {
+    public function new(?layoutSettings:LayoutSettings, ?clientConnection:Connection, ?commands:Array<Command>) {
         super();
 
         percentWidth = 25;
         percentHeight = 100;
 
-        generalTab = new GeneralTab(layoutSettings, clientConnection, serverConnection);
+        generalTab = new GeneralTab(layoutSettings, clientConnection);
         generalTab.onLoadPressed.add(onLoadPressed.dispatch);
         generalTab.onSavePressed.add(onSavePressed.dispatch);
 

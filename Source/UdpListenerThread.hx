@@ -16,14 +16,12 @@ class UdpListenerThread {
 
     private var server:UdpServer;
     private var controls:Array<Control>;
-    private var serverConnection:Connection;
     private var sensors:Array<Sensor>;
     private var uiThread:Thread;
 
-    public function new(server:UdpServer, ?controls:Array<Control>, ?serverConnection:Connection, ?sensors:Array<Sensor>) {
+    public function new(server:UdpServer, ?controls:Array<Control>, ?sensors:Array<Sensor>) {
         this.server = server;
         this.controls = controls;
-        this.serverConnection = serverConnection;
         this.sensors = sensors;
         uiThread = Thread.current();
         listenerThread = Thread.create(listen);
@@ -87,27 +85,7 @@ class UdpListenerThread {
     }
 
     private function handleControlOscMessage(receivedMessage:OscMessage) {
-        var control:Control = getControlForAddressPattern(receivedMessage.addressPattern);
-        if(control == null) {
-            return;
-        }
-        for(command in control.commands) {
-            var messageToSend:OscMessage = new OscMessage(command.addressPattern);
-            var commandValue:Dynamic = command.values[0];
-            var valueString = Std.string(commandValue);
-            var foundControl:Control = getControlForAddressPattern(valueString);
-            if(foundControl != null) {
-                // TODO: XY Pad will have 2 values
-                var controlValue:Float = receivedMessage.arguments[0];
-                foundControl.values[0] = controlValue;
-                messageToSend.addFloat(controlValue);
-            } else if(Std.is(commandValue, String)){
-                messageToSend.addString(commandValue);
-            } else {
-                messageToSend.addFloat(commandValue);
-            }
-            server.sendTo(messageToSend, serverConnection);
-        }
+        
     }
 
 }
