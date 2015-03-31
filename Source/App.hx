@@ -4,7 +4,6 @@ import haxe.Json;
 import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.core.PopupManager;
 import haxe.ui.toolkit.core.renderers.ItemRenderer;
-import models.Command;
 import models.Connection;
 import models.Control;
 import models.Control;
@@ -14,6 +13,8 @@ import openfl.events.Event;
 import osc.OscMessage;
 import sys.FileSystem;
 import sys.io.File;
+import sys.net.Address;
+import sys.net.Host;
 import views.builder.InstrumentBuilder;
 import views.leftsidebar.LeftSideBar;
 import views.sensorsidebar.SensorSideBar;
@@ -27,7 +28,6 @@ class App extends HBox {
     public var clientConnection:Connection;
     public var controls:Array<Control>;
     public var sensors:Array<Sensor>;
-    public var commands:Array<Command>;
 
     public var server:UdpServer;
     public var leftSideBar:LeftSideBar;
@@ -47,8 +47,7 @@ class App extends HBox {
             new LinearAccelerometer(),
             new Orientation(),
             new Gyroscope(),
-            new Gravity(),
-            new Gyroscope()
+            new Gravity()
         ];
 
         server = new UdpServer(12000);
@@ -62,21 +61,16 @@ class App extends HBox {
             for(c in cast(saveFileObj.controls, Array<Dynamic>)) {
                 controls.push(Control.fromDynamic(c));
             }
-            commands = new Array<Command>();
-            for(c in cast(saveFileObj.commands, Array<Dynamic>)) {
-                commands.push(Command.fromDynamic(c));
-            }
             layoutSettings = LayoutSettings.fromDynamic(saveFileObj.layout);
             clientConnection = Connection.fromDynamic(saveFileObj.clientConnection);
         } else {
             controls = new Array<Control>();
-            commands = [];
             layoutSettings = new LayoutSettings("layout1", 320, 480);
             clientConnection = new Connection("127.0.0.1", 11000);
         }
         listenerThread = new UdpListenerThread(server, sensors);
 
-        leftSideBar = new LeftSideBar(layoutSettings, clientConnection, commands);
+        leftSideBar = new LeftSideBar(layoutSettings, clientConnection);
         leftSideBar.onPropertiesUpdated.add(controlsUpdated);
         leftSideBar.onClientSyncPressed.add(syncClient);
         leftSideBar.onSavePressed.add(save);
@@ -131,7 +125,6 @@ class App extends HBox {
         var saveFileObj:Dynamic = {};
         saveFileObj.layout = layoutSettings;
         saveFileObj.controls = controls;
-        saveFileObj.commands = commands;
         saveFileObj.clientConnection = clientConnection;
         
         var filename:String = layoutSettings.name + ".rime";
@@ -152,6 +145,7 @@ class App extends HBox {
 
     private function deleteSelectedControl() {
         var control:Control = instrumentBuilder.selectedControl.properties;
+        leftSideBar.controlDeselected(control);
         controls.remove(control);
         refreshInstrumentBuilder();
     }

@@ -1,6 +1,5 @@
 package models;
 
-import models.Command;
 import models.Control;
 import views.instrument.controls.HSlider;
 import views.instrument.controls.PushButton;
