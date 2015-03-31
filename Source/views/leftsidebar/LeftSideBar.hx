@@ -6,6 +6,7 @@ import haxe.ui.toolkit.controls.Text;
 import models.Command;
 import models.Connection;
 import models.Control;
+import models.Control;
 import models.LayoutSettings;
 import msignal.Signal.Signal0;
 import msignal.Signal.Signal1;

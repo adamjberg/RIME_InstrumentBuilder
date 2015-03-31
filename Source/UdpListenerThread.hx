@@ -15,15 +15,11 @@ class UdpListenerThread {
     public var listenerThread:Thread;
 
     private var server:UdpServer;
-    private var controls:Array<Control>;
     private var sensors:Array<Sensor>;
-    private var uiThread:Thread;
 
-    public function new(server:UdpServer, ?controls:Array<Control>, ?sensors:Array<Sensor>) {
+    public function new(server:UdpServer, ?sensors:Array<Sensor>) {
         this.server = server;
-        this.controls = controls;
         this.sensors = sensors;
-        uiThread = Thread.current();
         listenerThread = Thread.create(listen);
     }
 
@@ -52,10 +48,6 @@ class UdpListenerThread {
     private function handleOscMessage(message:OscMessage) {
         if(message.addressPattern == "/sensors") {
             handleSensorOscMessage(message); 
-        } else if(message.addressPattern == "/sync") {
-            handleSyncMessage(message);
-        } else {
-            handleControlOscMessage(message);
         }
     }
 
@@ -68,24 +60,6 @@ class UdpListenerThread {
                 }
             }
         }
-    }
-
-    private function handleSyncMessage(message:OscMessage) {
-        var controlsObj:Array<Dynamic> = Json.parse(message.arguments[0]);
-        uiThread.sendMessage(controlsObj);
-    }
-
-    private function getControlForAddressPattern(addressPattern:String) {
-        for(control in controls) {
-            if(control.properties.addressPattern == addressPattern) {
-                return control;
-            }
-        }
-        return null;
-    }
-
-    private function handleControlOscMessage(receivedMessage:OscMessage) {
-        
     }
 
 }

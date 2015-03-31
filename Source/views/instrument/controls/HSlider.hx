@@ -1,7 +1,7 @@
 package views.instrument.controls;
 
 import haxe.ui.toolkit.events.UIEvent;
-import models.ControlProperties;
+import models.Control;
 import msignal.Signal.Signal1;
 import views.instrument.controls.IControl;
 
@@ -15,18 +15,18 @@ class HSlider extends haxe.ui.toolkit.controls.HSlider implements IControl {
         return _onValueChanged;
     }
 
-    private var _properties:ControlProperties;
-    public var properties(get, set):ControlProperties;
-    public function get_properties():ControlProperties {
+    private var _properties:Control;
+    public var properties(get, set):Control;
+    public function get_properties():Control {
         return _properties;
     }
-    public function set_properties(props:ControlProperties):ControlProperties {
+    public function set_properties(props:Control):Control {
         _properties = props;
         update();
         return _properties;
     }
 
-    public function new(?properties:ControlProperties) {
+    public function new(?properties:Control) {
         super();
         this.properties = properties;
         addEventListener(UIEvent.CHANGE, valueChanged);

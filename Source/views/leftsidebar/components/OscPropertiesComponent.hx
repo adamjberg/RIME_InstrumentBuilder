@@ -4,7 +4,7 @@ import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.controls.Text;
 import haxe.ui.toolkit.events.UIEvent;
 import views.controls.LabelledTextInput;
-import models.ControlProperties;
+import models.Control;
 import views.instrument.controls.IControl;
 import views.leftsidebar.components.SidebarComponent;
 
@@ -12,7 +12,7 @@ class OscPropertiesComponent extends SidebarComponent {
 
     private static inline var TITLE:String = "OSC";
 
-    private var properties:ControlProperties;
+    private var properties:Control;
 
     private var addressPatternInput:LabelledTextInput;
     private var valueRangeLabel:Text;
@@ -44,7 +44,7 @@ class OscPropertiesComponent extends SidebarComponent {
         addChild(valueRangeHBox);
     }
 
-    public function setProperties(properties:ControlProperties) {
+    public function setProperties(properties:Control) {
         this.properties = properties;
         addressPatternInput.setText(Std.string(properties.addressPattern));
         fromInput.setText(Std.string(properties.fromValue));

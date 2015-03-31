@@ -1,7 +1,7 @@
 package models;
 
 import models.Command;
-import models.ControlProperties;
+import models.Control;
 import views.instrument.controls.HSlider;
 import views.instrument.controls.PushButton;
 import views.instrument.controls.ToggleButton;
@@ -24,31 +24,27 @@ class Control {
         TYPE_XYPAD => XYPad
     ];
 
-    public var properties:ControlProperties;
-    public var commands:Array<Command>;
-    public var values:Array<Float>;
+    public var x:Int = 0;
+    public var y:Int = 0;
+    public var width:Int = 0;
+    public var height:Int = 0;
+    public var type:String = "";
+    public var addressPattern = "/";
+    public var title = "";
+    public var fromValue:Float = 0;
+    public var toValue:Float = 1;
 
     public static function fromDynamic(from:Dynamic):Control {
-        return new Control(
-            ControlProperties.fromDynamic(from.properties), from.commands
-        );
-    }
-
-    public function new(?properties:ControlProperties, ?commands:Array<Command>) {
-        if(properties != null) { 
-            this.properties = properties;
-        } else {
-            this.properties = new ControlProperties();
-        }
-        if(commands != null) {
-            this.commands = commands;
-        } else {
-            this.commands = new Array<Command>();
-        }
-
-        if(this.commands.length == 0) {
-            this.commands.push(new Command());
-        }
-        values = new Array<Float>();
+        var to:Control = new Control();
+        to.x = from.x;
+        to.y = from.y;
+        to.width = from.width;
+        to.height = from.height;
+        to.type = from.type;
+        to.addressPattern = from.addressPattern;
+        to.fromValue = from.fromValue;
+        to.toValue = from.toValue;
+        to.title = from.title;
+        return to;
     }
 }

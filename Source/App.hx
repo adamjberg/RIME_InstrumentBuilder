@@ -7,7 +7,7 @@ import haxe.ui.toolkit.core.renderers.ItemRenderer;
 import models.Command;
 import models.Connection;
 import models.Control;
-import models.ControlProperties;
+import models.Control;
 import models.LayoutSettings;
 import models.sensors.*;
 import openfl.events.Event;
@@ -74,10 +74,10 @@ class App extends HBox {
             layoutSettings = new LayoutSettings("layout1", 320, 480);
             clientConnection = new Connection("127.0.0.1", 11000);
         }
-        listenerThread = new UdpListenerThread(server, controls, sensors);
+        listenerThread = new UdpListenerThread(server, sensors);
 
         leftSideBar = new LeftSideBar(layoutSettings, clientConnection, commands);
-        leftSideBar.onPropertiesUpdated.add(controlPropertiesUpdated);
+        leftSideBar.onPropertiesUpdated.add(controlsUpdated);
         leftSideBar.onClientSyncPressed.add(syncClient);
         leftSideBar.onSavePressed.add(save);
         leftSideBar.onLoadPressed.add(openLoadFilePopup);
@@ -144,32 +144,21 @@ class App extends HBox {
     }
 
     private function syncClient(connection:Connection) {
-        var controlPropertiesArray:Array<Dynamic> = new Array<Dynamic>();
-        var controlProperties:ControlProperties;
-        for(control in controls) {
-            controlProperties = control.properties;
-            controlPropertiesArray.push(control.properties);
-        }
-        var controlPropertiesString:String = Json.stringify(controlPropertiesArray);
+        var controlsString:String = Json.stringify(controls);
         var syncMessage = new OscMessage("/sync");
-        syncMessage.addString(controlPropertiesString);
+        syncMessage.addString(controlsString);
         server.sendTo(syncMessage, clientConnection);
     }
 
     private function deleteSelectedControl() {
-        var properties:ControlProperties = instrumentBuilder.selectedControl.properties;
-        for(control in controls) {
-            if(control.properties == properties) {
-                controls.remove(control);
-                break;
-            }
-        }
+        var control:Control = instrumentBuilder.selectedControl.properties;
+        controls.remove(control);
         refreshInstrumentBuilder();
     }
 
     private function getControl(addressPattern:String):Control {
         for( control in controls) {
-            if(control.properties.addressPattern == addressPattern) {
+            if(control.addressPattern == addressPattern) {
                 return control;
             }
         }
@@ -180,9 +169,8 @@ class App extends HBox {
         return "/control" + controlCount++;
     }
 
-    private function controlAdded(controlProperties:ControlProperties) {
-        controlProperties.addressPattern = generateAddressPattern();
-        var control:Control = new Control(controlProperties);
+    private function controlAdded(control:Control) {
+        control.addressPattern = generateAddressPattern();
         controls.push(control); 
     }
 
@@ -198,7 +186,7 @@ class App extends HBox {
         leftSideBar.controlUpdated(getControl(addressPattern));
     }
 
-    private function controlPropertiesUpdated() {
+    private function controlsUpdated() {
         instrumentBuilder.updateCurrentControl();
     }
 }

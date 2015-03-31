@@ -4,17 +4,17 @@ import haxe.ui.toolkit.containers.HBox;
 import haxe.ui.toolkit.events.UIEvent;
 import msignal.Signal.Signal0;
 import views.controls.LabelledTextInput;
-import models.ControlProperties;
+import models.Control;
 import views.instrument.controls.IControl;
 import views.leftsidebar.components.SidebarComponent;
 
-class ControlPropertiesComponent extends SidebarComponent {
+class ControlComponent extends SidebarComponent {
 
     private static inline var TITLE:String = "Properties";
 
     public var onPropertiesUpdated:Signal0 = new Signal0();
 
-    private var properties:ControlProperties;
+    private var properties:Control;
 
     private var xInput:LabelledTextInput;
     private var yInput:LabelledTextInput;
@@ -22,7 +22,7 @@ class ControlPropertiesComponent extends SidebarComponent {
     private var heightInput:LabelledTextInput;
     private var labelInput:LabelledTextInput;
 
-    public function new(?properties:ControlProperties) {
+    public function new(?properties:Control) {
         super(TITLE);
 
         labelInput = new LabelledTextInput("Name");
@@ -54,10 +54,10 @@ class ControlPropertiesComponent extends SidebarComponent {
 
         addChild(xyHBox);
         addChild(widthHeightHBox);
-        setControlProperties(properties);
+        setControl(properties);
     }
 
-    public function setControlProperties(properties:ControlProperties) {
+    public function setControl(properties:Control) {
         this.properties = properties;
         update();
     }

@@ -3,9 +3,10 @@ package views.leftsidebar.tabs;
 import haxe.ui.toolkit.controls.Button;
 import haxe.ui.toolkit.events.UIEvent;
 import models.Control;
+import models.Control;
 import msignal.Signal.Signal0;
 import views.instrument.controls.IControl;
-import views.leftsidebar.components.ControlPropertiesComponent;
+import views.leftsidebar.components.ControlComponent;
 import views.leftsidebar.components.OscPropertiesComponent;
 
 class ControlTab extends Tab {
@@ -13,20 +14,20 @@ class ControlTab extends Tab {
     public var onPropertiesUpdated:Signal0 = new Signal0();
     public var onDeletePressed:Signal0 = new Signal0();
 
-    private var control:Control;
+    private var properties:Control;
 
-    private var controlProperties:ControlPropertiesComponent;
+    private var controls:ControlComponent;
     private var oscProperties:OscPropertiesComponent;
     private var deleteButton:Button;
 
-    public function new(?control:Control) {
+    public function new(?properties:Control) {
         super("Control");
 
-        this.control = control;
+        this.properties = properties;
 
-        controlProperties = new ControlPropertiesComponent(control.properties);
-        controlProperties.onPropertiesUpdated.add(onPropertiesUpdated.dispatch);
-        addComponent(controlProperties);
+        controls = new ControlComponent(properties);
+        controls.onPropertiesUpdated.add(onPropertiesUpdated.dispatch);
+        addComponent(controls);
         oscProperties = new OscPropertiesComponent();
         addComponent(oscProperties);
 
@@ -40,12 +41,12 @@ class ControlTab extends Tab {
     }
 
     public function update() {
-        controlProperties.update();
+        controls.update();
     }
 
-    public function setControl(control:Control) {
-        this.control = control;
-        controlProperties.setControlProperties(control.properties);
-        oscProperties.setProperties(control.properties);
+    public function setControl(properties:Control) {
+        this.properties = properties;
+        controls.setControl(properties);
+        oscProperties.setProperties(properties);
     }
 }

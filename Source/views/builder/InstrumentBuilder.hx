@@ -10,13 +10,13 @@ import haxe.ui.toolkit.events.UIEvent;
 import models.Control;
 import msignal.Signal.Signal1;
 import openfl.events.MouseEvent;
-import models.ControlProperties;
+import models.Control;
 import views.instrument.controls.*;
 import views.instrument.Instrument;
 
 class InstrumentBuilder extends VBox {
 
-    public var onControlAdded:Signal1<ControlProperties> = new Signal1<ControlProperties>();
+    public var onControlAdded:Signal1<Control> = new Signal1<Control>();
     public var onControlSelected:Signal1<String> = new Signal1<String>();
     public var onControlDeselected:Signal1<String> = new Signal1<String>();
     public var onControlUpdated:Signal1<String> = new Signal1<String>();
@@ -48,7 +48,7 @@ class InstrumentBuilder extends VBox {
         addChild(instrument);
 
         for(control in controls) {
-            addControlToBuilder(control.properties);
+            addControlToBuilder(control);
         }
 
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
@@ -88,16 +88,16 @@ class InstrumentBuilder extends VBox {
         }
         var selectedItem:ItemRenderer = value;
         var selectedControlName:String = selectedItem.data.text;
-        var properties:ControlProperties = new ControlProperties();
-        properties.x = mouseX;
-        properties.y = mouseY;
-        properties.type = selectedControlName;
+        var control:Control = new Control();
+        control.x = mouseX;
+        control.y = mouseY;
+        control.type = selectedControlName;
 
-        addControlToBuilder(properties);
+        addControlToBuilder(control);
     }
 
-    private function addControlToBuilder(properties:ControlProperties) {
-        var control:IControl = instrument.addControlFromProperties(properties);
+    private function addControlToBuilder(control:Control) {
+        var control:IControl = instrument.addControlFromProperties(control);
         var controlAsComponent = cast(control, Component);
 
         controlAsComponent.addEventListener(MouseEvent.MOUSE_DOWN, controlPressed);
